@@ -1,0 +1,105 @@
+{
+  "name": "stackit-engine",
+  "productName": "Stackit Engine",
+  "version": "1.0.0",
+  "description": "Blok tabanlı (Scratch tarzı) gerçek 2D oyun motoru",
+  "private": true,
+  "author": "Stackit Engine",
+  "license": "MIT",
+  "homepage": "./",
+  "main": "electron/main.js",
+  "scripts": {
+    "start": "node server.js",
+    "desktop": "electron .",
+    "build:web": "node scripts/build-web.js",
+    "dist:linux": "electron-builder --linux",
+    "dist:win": "electron-builder --win",
+    "dist:desktop": "electron-builder --linux --win",
+    "android:sync": "node scripts/build-web.js --android && cap sync android",
+    "android:apk": "npm run android:sync && cd android && ./gradlew assembleRelease bundleRelease",
+    "android:icons": "capacitor-assets generate --android --iconBackgroundColor \"#191c29\" --iconBackgroundColorDark \"#191c29\" --splashBackgroundColor \"#11131d\" --splashBackgroundColorDark \"#11131d\"",
+    "dist:win-setup": "electron-builder --win nsis"
+  },
+  "build": {
+    "appId": "com.stackit.engine",
+    "productName": "Stackit Engine",
+    "copyright": "Stackit Engine",
+    "directories": {
+      "output": "release",
+      "buildResources": "build"
+    },
+    "files": [
+      "index.html",
+      "css/**/*",
+      "js/**/*",
+      "!js/platform/**",
+      "electron/**/*",
+      "package.json"
+    ],
+    "asar": true,
+    "compression": "maximum",
+    "linux": {
+      "target": [
+        "AppImage",
+        "deb"
+      ],
+      "icon": "build/icon.png",
+      "category": "Development",
+      "executableName": "stackit-engine",
+      "synopsis": "Blok tabanlı 2D oyun motoru",
+      "description": "Scratch tarzı bloklarla gerçek 2D oyunlar yap: fizik, karo haritaları, seviyeler, müzik.",
+      "maintainer": "Stackit Engine",
+      "artifactName": "Stackit-Engine-${version}-linux-${arch}.${ext}",
+      "syncDesktopName": true
+    },
+    "deb": {
+      "packageName": "stackit-engine"
+    },
+    "win": {
+      "target": [
+        {
+          "target": "portable",
+          "arch": [
+            "x64"
+          ]
+        },
+        {
+          "target": "zip",
+          "arch": [
+            "x64"
+          ]
+        }
+      ],
+      "icon": "build/icon.ico",
+      "artifactName": "Stackit-Engine-${version}-windows-${arch}.${ext}"
+    },
+    "nsis": {
+      "oneClick": false,
+      "perMachine": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "shortcutName": "Stackit Engine",
+      "installerLanguages": [
+        "tr_TR"
+      ],
+      "language": "1055",
+      "artifactName": "Stackit-Engine-${version}-windows-setup.${ext}"
+    },
+    "portable": {
+      "artifactName": "Stackit-Engine-${version}-windows-portable.${ext}"
+    }
+  },
+  "devDependencies": {
+    "@capacitor/android": "^8.6.2",
+    "@capacitor/app": "^8.1.2",
+    "@capacitor/assets": "^4.0.0",
+    "@capacitor/cli": "^8.6.2",
+    "@capacitor/core": "^8.6.2",
+    "@capacitor/filesystem": "^8.1.5",
+    "@capacitor/share": "^8.0.3",
+    "@fontsource-variable/nunito": "^5.3.0",
+    "electron": "^45.3.2",
+    "electron-builder": "^26.18.0"
+  },
+  "desktopName": "stackit-engine.desktop"
+}

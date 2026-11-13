@@ -1,0 +1,15 @@
+{
+  "appId": "com.stackit.engine",
+  "appName": "Stackit Engine",
+  "webDir": "dist/web",
+  "backgroundColor": "#11131d",
+  "android": {
+    "backgroundColor": "#11131d",
+    "allowMixedContent": false
+  },
+  "plugins": {
+    "SystemBars": {
+      "style": "DARK"
+    }
+  }
+}

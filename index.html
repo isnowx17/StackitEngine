@@ -1,0 +1,164 @@
+<!doctype html>
+<html lang="tr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <script>
+    /* Editör en az ~1180px genişlik ister: küçük ekranlarda (telefon) sayfayı bu genişlikte çizip ekrana sığdır */
+    (function () {
+      var s = Math.max(screen.width, screen.height);
+      if (s && s < 1180) document.querySelector('meta[name=viewport]').setAttribute('content', 'width=1180');
+    })();
+  </script>
+  <title>Stackit Engine</title>
+  <meta name="description" content="Blok tabanlı 2D oyun motoru">
+  <link rel="preload" href="css/fonts/nunito-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="css/editor.css">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect x='4' y='20' width='24' height='8' rx='2' fill='%23E9A92B'/%3E%3Crect x='4' y='12' width='20' height='8' rx='2' fill='%234A87F0'/%3E%3Crect x='4' y='4' width='16' height='8' rx='2' fill='%237c5cff'/%3E%3C/svg%3E">
+</head>
+<body class="view-loading">
+  <header id="topbar">
+    <div class="brand" aria-label="Stackit Engine">
+      <svg width="28" height="28" viewBox="0 0 32 32" aria-hidden="true">
+        <rect x="3" y="21" width="26" height="8" rx="2.5" fill="#E9A92B"/>
+        <rect x="9" y="19" width="7" height="3" rx="1.2" fill="#4A87F0"/>
+        <rect x="3" y="12" width="21" height="8" rx="2.5" fill="#4A87F0"/>
+        <rect x="9" y="10" width="7" height="3" rx="1.2" fill="#7c5cff"/>
+        <rect x="3" y="3" width="16" height="8" rx="2.5" fill="#7c5cff"/>
+      </svg>
+      <span>Stackit</span><small>Engine</small>
+    </div>
+    <button id="btn-home" class="btn home-btn" type="button" title="Projelerim (tüm projeler)"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg>Projelerim</button>
+    <input id="project-name" aria-label="Proje adı" spellcheck="false">
+    <span id="save-state" title="Tarayıcıya kaydedildi">✓</span>
+    <div class="tb-actions">
+      <button id="btn-new" class="btn" type="button"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3h8l5 5v13H6zM14 3v5h5M12.5 11v7M9 14.5h7"/></svg>Yeni</button>
+      <button id="btn-open" class="btn" type="button"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 6h6l2 2h10v11H3zM3 10h18"/></svg>Aç</button>
+      <button id="btn-download" class="btn" type="button" title="Projeyi .stackit dosyası olarak indir"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v11M7.5 10.5L12 15l4.5-4.5M5 19h14"/></svg>İndir</button>
+      <button id="btn-export" class="btn primary" type="button" title="Oyunu tek bir HTML dosyası olarak dışa aktar"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 15V4M7.5 8.5L12 4l4.5 4.5M5 14v6h14v-6"/></svg>Oyunu Dışa Aktar</button>
+    </div>
+  </header>
+
+  <main id="main">
+    <aside id="palette" aria-label="Blok paleti">
+      <nav id="cats"></nav>
+      <div id="blocks"></div>
+      <div class="trash-hint"><span>🗑</span>Silmek için bırak</div>
+    </aside>
+
+    <section id="center">
+      <div class="tabs" role="tablist">
+        <button id="tab-code" class="tab on" type="button" role="tab">Kod</button>
+        <button id="tab-costumes" class="tab" type="button" role="tab">Kostümler</button>
+        <button id="tab-sounds" class="tab" type="button" role="tab">Sesler</button>
+        <button id="tab-map" class="tab" type="button" role="tab">Harita &amp; Seviyeler</button>
+        <span class="target-label">Seçili: <b id="target-name"></b></span>
+      </div>
+      <div id="code-pane"><div id="ws"></div></div>
+      <div id="costume-pane" hidden></div>
+      <div id="sound-pane" hidden></div>
+      <div id="map-pane" hidden></div>
+    </section>
+
+    <aside id="right">
+      <div id="stage-bar">
+        <button id="btn-play" class="sbtn play" type="button" title="Oyna (Ctrl+Enter)"><svg viewBox="0 0 24 24"><path d="M7 4.5l12.5 7.5L7 19.5z"/></svg></button>
+        <button id="btn-pause" class="sbtn" type="button" title="Duraklat"><svg viewBox="0 0 24 24"><path d="M6.5 5h4v14h-4zM13.5 5h4v14h-4z"/></svg></button>
+        <button id="btn-stop" class="sbtn stop" type="button" title="Durdur ve sahneyi sıfırla"><svg viewBox="0 0 24 24"><rect x="6" y="6" width="12" height="12" rx="2"/></svg></button>
+        <span id="stage-mode">DÜZENLEME</span>
+        <span id="fps"></span>
+        <select id="level-select" class="field lvl-select" title="Düzenlenen / oynanan seviye"></select>
+        <span class="grow"></span>
+        <button id="btn-view" class="sbtn ghost" type="button" title="Sahne görünümünü sıfırla (düzenleme modunda tekerlekle yakınlaştır, boş yeri sürükleyerek kaydır)"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v4M12 17v4M3 12h4M17 12h4M12 8a4 4 0 1 0 0 8a4 4 0 1 0 0-8"/></svg></button>
+        <button id="btn-size" class="sbtn ghost" type="button" title="Sahneyi küçült / büyüt"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 14h6v6M20 10h-6V4M10 14l-6 6M14 10l6-6"/></svg></button>
+        <button id="btn-full" class="sbtn ghost" type="button" title="Tam ekran"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg></button>
+      </div>
+      <div id="stage-wrap"><canvas id="stage"></canvas></div>
+      <div id="inspector"></div>
+      <div id="sprites-panel">
+        <div id="sprite-list"></div>
+        <button id="stage-tile" class="sprite-tile stage" type="button" title="Sahne: arka plan, dekor ve genel betikler">
+          <span class="st-thumb"></span>
+          <span class="st-name">Sahne</span>
+        </button>
+      </div>
+    </aside>
+  </main>
+
+  <div id="home" hidden>
+    <header class="home-top">
+      <div class="brand" role="button" tabindex="0" aria-label="Stackit Engine">
+      <svg width="28" height="28" viewBox="0 0 32 32" aria-hidden="true">
+        <rect x="3" y="21" width="26" height="8" rx="2.5" fill="#E9A92B"/>
+        <rect x="9" y="19" width="7" height="3" rx="1.2" fill="#4A87F0"/>
+        <rect x="3" y="12" width="21" height="8" rx="2.5" fill="#4A87F0"/>
+        <rect x="9" y="10" width="7" height="3" rx="1.2" fill="#7c5cff"/>
+        <rect x="3" y="3" width="16" height="8" rx="2.5" fill="#7c5cff"/>
+      </svg>
+      <span>Stackit</span><small>Engine</small>
+    </div>
+      <span class="grow"></span>
+      <button id="home-import" class="btn" type="button" title=".stackit dosyasını Projelerim'e ekle"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 6h6l2 2h10v11H3zM3 10h18"/></svg>Dosyadan aç</button>
+    </header>
+    <div class="home-scroll">
+      <div class="home-wrap">
+        <section class="home-hero">
+          <h1 id="home-title">Merhaba!</h1>
+          <p id="home-storage" class="home-muted"></p>
+          <div class="hero-cards">
+            <button id="home-new" class="hero-card new" type="button">
+              <span class="hero-plus"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></span>
+              <span class="hero-info">
+                <b class="hero-name">Yeni proje oluştur</b>
+                <span class="hero-sub">Boş bir sahneyle ya da hazır bir örnekle başla</span>
+              </span>
+            </button>
+            <div id="home-continue" class="hero-slot"></div>
+          </div>
+        </section>
+        <section class="home-sec">
+          <div class="sec-head">
+            <h2>Projelerim <span id="proj-count" class="count"></span></h2>
+            <span class="grow"></span>
+            <input id="home-search" class="field" type="search" placeholder="Proje ara…" spellcheck="false">
+            <select id="home-sort" class="field" title="Sırala">
+              <option value="modified">Son düzenlenen</option>
+              <option value="created">Son oluşturulan</option>
+              <option value="name">Ada göre</option>
+            </select>
+          </div>
+          <div id="proj-grid" class="proj-grid"></div>
+        </section>
+        <section class="home-sec">
+          <div class="sec-head"><h2>Örnekten başla</h2></div>
+          <div id="tpl-grid" class="proj-grid"></div>
+        </section>
+      </div>
+    </div>
+  </div>
+
+  <div id="drag-layer"></div>
+  <div id="toasts" aria-live="polite"></div>
+
+  <!-- çalışma zamanı (oyunla birlikte dışa aktarılır) -->
+  <script src="js/runtime/core.js"></script>
+  <script src="js/runtime/audio.js"></script>
+  <script src="js/runtime/engine.js"></script>
+  <script src="js/runtime/vm.js"></script>
+  <script src="js/runtime/blocks.js"></script>
+  <script src="js/runtime/player.js"></script>
+  <!-- editör -->
+  <script src="js/editor/ui.js"></script>
+  <script src="js/editor/library.js"></script>
+  <script src="js/editor/blockview.js"></script>
+  <script src="js/editor/workspace.js"></script>
+  <script src="js/editor/palette.js"></script>
+  <script src="js/editor/costumes.js"></script>
+  <script src="js/editor/sounds.js"></script>
+  <script src="js/editor/mapeditor.js"></script>
+  <script src="js/editor/examples.js"></script>
+  <script src="js/editor/store.js"></script>
+  <script src="js/editor/home.js"></script>
+  <script src="js/editor/app.js"></script>
+</body>
+</html>
