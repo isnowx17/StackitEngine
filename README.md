@@ -38,7 +38,6 @@ Kodu sürükle-bırak bloklarla yazarsın; altında **sabit 60 Hz simülasyon d�
 | **Linux** | [Stackit-Engine-1.0.0-linux-x86_64.AppImage](https://github.com/isnowx17/StackitEngine/releases/latest/download/Stackit-Engine-1.0.0-linux-x86_64.AppImage) | `chmod +x` yap, çalıştır |
 | Debian / Ubuntu | [Stackit-Engine-1.0.0-linux-amd64.deb](https://github.com/isnowx17/StackitEngine/releases/latest/download/Stackit-Engine-1.0.0-linux-amd64.deb) | `sudo apt install ./Stackit-Engine-1.0.0-linux-amd64.deb` |
 | **Android 7+** | [Stackit-Engine-1.0.0-android.apk](https://github.com/isnowx17/StackitEngine/releases/latest/download/Stackit-Engine-1.0.0-android.apk) | Tablet önerilir; yatay ekran |
-| Google Play paketi | [Stackit-Engine-1.0.0-android.aab](https://github.com/isnowx17/StackitEngine/releases/latest/download/Stackit-Engine-1.0.0-android.aab) | Play Console için |
 | **Tarayıcı** | Bu repoyu indir, `index.html`'i aç | Kurulum yok, çevrimdışı çalışır |
 
 > **İlk açılışta uyarı çıkabilir:** Windows dosyaları imzasız olduğu için SmartScreen "Windows bilgisayarınızı korudu" diyebilir → **Ek bilgi → Yine de çalıştır**. Android'de APK'yı kurmak için tarayıcına/dosya yöneticine "bilinmeyen uygulamaları yükleme" izni ver. Bazı Linux dağıtımlarında AppImage için `libfuse2` gerekir.
@@ -121,7 +120,7 @@ npm run desktop          # Electron'da geliştirme modunda aç
 npm run dist:linux       # AppImage + .deb
 npm run dist:win         # taşınabilir .exe + .zip (Linux'ta da wine gerekmez)
 npm run dist:win-setup   # klasik kurulum sihirbazı (NSIS) — Linux'ta wine gerekir
-npm run android:apk      # web → Capacitor senkron → imzalı APK + AAB
+npm run android:apk      # web → Capacitor senkron → imzalı APK (+ Google Play için AAB)
 ```
 
 Çıktılar `release/` (masaüstü) ve `android/app/build/outputs/` (Android) klasörlerine düşer.
