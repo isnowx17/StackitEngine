@@ -333,8 +333,273 @@
     };
   };
 
+  /* ---------- 3D görünümlü örnekler: yalnızca mevcut bloklarla (kalem + matematik + listeler) ---------- */
+  function op(name, a, b) { return blk(name, { A: a, B: b }); }
+  function mul(a, b) { return op('mul', a, b); }
+  function add(a, b) { return op('add', a, b); }
+  function sub(a, b) { return op('sub', a, b); }
+  function div(a, b) { return op('div', a, b); }
+  function gt(a, b) { return op('gt', a, b); }
+  function lt(a, b) { return op('lt', a, b); }
+  function eq(a, b) { return op('eq', a, b); }
+  function fn(f, a) { return blk('math', { FN: f, A: a }); }
+  /* "ekranı yenilemeden çalıştır" fonksiyonu: her kare tek seferde çizilir */
+  function procDef(name, body) {
+    var d = { op: 'proc_def', proc: name, params: [], warp: true, inputs: {}, next: null };
+    d.next = seq(body);
+    return d;
+  }
+  function procCall(name) { return { op: 'proc_call', proc: name, params: [], inputs: {}, next: null }; }
+  /* karakterin yerel değişken ve listeleri için kısayollar */
+  function scope(sp) {
+    var ids = {};
+    var S = {
+      v: function (n, shown) {
+        ids[n] = U.uid('v');
+        sp.variables.push({ id: ids[n], name: shown || n, value: 0 });
+      },
+      list: function (n, shown, items) {
+        ids['L:' + n] = U.uid('l');
+        sp.lists.push({ id: ids['L:' + n], name: shown || n, items: items || [] });
+      },
+      id: function (n) { return ids[n]; },
+      get: function (n) { return blk('var', { VAR: ids[n] }); },
+      set: function (n, val) { return blk('set_var', { VAR: ids[n], V: val }); },
+      chg: function (n, val) { return blk('change_var', { VAR: ids[n], V: val }); },
+      item: function (n, i) { return blk('list_item', { LIST: ids['L:' + n], I: i }); },
+      push: function (n, val) { return blk('list_add', { V: val, LIST: ids['L:' + n] }); },
+      clear: function (n) { return blk('list_clear', { LIST: ids['L:' + n] }); }
+    };
+    return S;
+  }
+  function infoSprite(text, y) {
+    var info = sprite(U.uid('spr'), SE.t('Bilgi'), [StackitLib.blank(16, 16, SE.t('kostüm'))], { x: 0, y: y });
+    info.scripts.push(script(30, 30, [blk('when_start'), blk('goto_xy', { X: 0, Y: y }), blk('show'), blk('say_for', { TEXT: text, SECS: 4 })]));
+    return info;
+  }
+
+  /* 3D Küp: köşeler döndürülür (sin/cos), perspektifle ekrana yansıtılır, kenarlar kalemle çizilir.
+   * Arkadaki kenarlar önce, ince ve soluk; öndekiler sonra, kalın ve parlak çizilir. */
+  Ex.cube3d = function () {
+    var st = stage({ bgColor: '#141826' });
+    var cube = sprite(U.uid('spr'), SE.t('Küp'), [StackitLib.blank(16, 16, SE.t('kostüm'))], { visible: false });
+    var S = scope(cube), P = 80;
+    S.v('ay', SE.t('açıY'));
+    S.v('ax', SE.t('açıX'));
+    S.v('dep', SE.t('derinlik'));
+    ['x', 'y', 'z', 'x1', 'z1', 'y2', 'z2', 'k', 'i', 'e', 'a', 'b'].forEach(function (n) { S.v(n); });
+    S.list('kx', SE.t('köşeX'), [-P, P, P, -P, -P, P, P, -P]);
+    S.list('ky', SE.t('köşeY'), [-P, -P, P, P, -P, -P, P, P]);
+    S.list('kz', SE.t('köşeZ'), [-P, -P, -P, -P, P, P, P, P]);
+    S.list('ex', SE.t('ekranX'));
+    S.list('ey', SE.t('ekranY'));
+    S.list('ez', SE.t('ekranZ'));
+    S.list('ed', SE.t('kenarlar'), [1, 2, 2, 3, 3, 4, 4, 1, 5, 6, 6, 7, 7, 8, 8, 5, 1, 5, 2, 6, 3, 7, 4, 8]);
+    var ROT = SE.t('döndür ve yansıt'), DRAW = SE.t('küpü çiz');
+    var g = S.get;
+    cube.scripts.push(script(30, 30, [
+      blk('when_start'),
+      blk('hide'),
+      S.set('ay', 30),
+      S.set('ax', -20),
+      C('forever', null, [
+        C('if_else', { COND: blk('mouse_down') },
+          [S.set('ay', blk('mouse_x')), S.set('ax', blk('mouse_y'))],
+          [S.chg('ay', 1.5), S.chg('ax', 0.6)]),
+        procCall(ROT),
+        procCall(DRAW)
+      ])
+    ]));
+    cube.scripts.push({ x: 30, y: 330, block: procDef(ROT, [
+      S.clear('ex'), S.clear('ey'), S.clear('ez'),
+      C('for_range', { VAR: S.id('i'), FROM: 1, TO: 8 }, [
+        S.set('x', S.item('kx', g('i'))),
+        S.set('y', S.item('ky', g('i'))),
+        S.set('z', S.item('kz', g('i'))),
+        S.set('x1', sub(mul(g('x'), fn('cos', g('ay'))), mul(g('z'), fn('sin', g('ay'))))),
+        S.set('z1', add(mul(g('x'), fn('sin', g('ay'))), mul(g('z'), fn('cos', g('ay'))))),
+        S.set('y2', sub(mul(g('y'), fn('cos', g('ax'))), mul(g('z1'), fn('sin', g('ax'))))),
+        S.set('z2', add(mul(g('y'), fn('sin', g('ax'))), mul(g('z1'), fn('cos', g('ax'))))),
+        S.set('k', div(400, add(g('z2'), 400))),
+        S.push('ex', mul(g('x1'), g('k'))),
+        S.push('ey', mul(g('y2'), g('k'))),
+        S.push('ez', g('z2'))
+      ])
+    ]) });
+    function edges(back) {
+      var isBack = gt(g('dep'), 0);
+      return C('for_range', { VAR: S.id('e'), FROM: 1, TO: 12 }, [
+        S.set('a', S.item('ed', sub(mul(g('e'), 2), 1))),
+        S.set('b', S.item('ed', mul(g('e'), 2))),
+        S.set('dep', div(add(S.item('ez', g('a')), S.item('ez', g('b'))), 2)),
+        C('if', { COND: back ? isBack : blk('not', { A: isBack }) }, [
+          blk('pen_size', { S: sub(7, div(g('dep'), 22)) }),
+          blk('pen_color', { C: back ? '#4b3f8f' : '#c9b8ff' }),
+          blk('goto_xy', { X: S.item('ex', g('a')), Y: S.item('ey', g('a')) }),
+          blk('pen_down'),
+          blk('goto_xy', { X: S.item('ex', g('b')), Y: S.item('ey', g('b')) }),
+          blk('pen_up')
+        ])
+      ]);
+    }
+    cube.scripts.push({ x: 560, y: 30, block: procDef(DRAW, [
+      blk('pen_clear'),
+      blk('pen_color', { C: '#0b0d16' }),
+      blk('pen_size', { S: 34 }),
+      blk('goto_xy', { X: -95, Y: -150 }),
+      blk('pen_down'),
+      blk('goto_xy', { X: 95, Y: -150 }),
+      blk('pen_up'),
+      edges(true),
+      edges(false),
+      blk('pen_color', { C: '#5ef2d0' }),
+      C('for_range', { VAR: S.id('i'), FROM: 1, TO: 8 }, [
+        blk('pen_size', { S: sub(15, div(S.item('ez', g('i')), 12)) }),
+        blk('goto_xy', { X: S.item('ex', g('i')), Y: S.item('ey', g('i')) }),
+        blk('pen_down'),
+        blk('pen_up')
+      ])
+    ]) });
+    return {
+      format: 'stackit-1', name: SE.t('3D Küp'), stage: st,
+      // son karakter açılışta seçili gelir: 3D kodu görünsün
+      sprites: [infoSprite(SE.t('Fareyle sürükle: küpü döndür!'), 150), cube], messages: []
+    };
+  };
+
+  /* Labirent 3D: her ekran sütunu için bir ışın, karoya çarpana kadar adım adım ilerler.
+   * Uzaklık ne kadar azsa duvar o kadar uzun ve parlak çizilir. Labirent "Harita & Seviyeler" sekmesindedir. */
+  Ex.maze3d = function () {
+    var rows = [
+      '############',
+      '#..#.......#',
+      '#..#.BBB.#.#',
+      '#....B...#.#',
+      'BBB.BB.###.#',
+      '#...#..#...#',
+      '#.###.##.###',
+      '#.#...#....#',
+      '#.#.###.BB.#',
+      '#...#...B..#',
+      '#.#...#.B..Q',
+      '############'
+    ];
+    var TILE = { '#': 3, B: 4, Q: 10 }, cells = {};
+    rows.forEach(function (row, r) {
+      row.split('').forEach(function (ch, c) { if (TILE[ch]) cells[20 + c + ',' + (5 - r)] = TILE[ch]; });
+    });
+    var st = stage({ bgColor: '#6fb3e8' });
+    var blank = function () { return [StackitLib.blank(16, 16, SE.t('kostüm'))]; };
+    var PLAYER = 'spr_oyuncu', WIN = SE.t('kazandın');
+    var EXIT = SE.t('soru kutusu'), BRICK = SE.t('tuğla');
+
+    // başlangıç: üst koridorun başı, koridora bakarak (karo 24,4)
+    var player = sprite(PLAYER, SE.t('Oyuncu'), blank(), { x: 784, y: 144, visible: false });
+    var ahead = function (sign, dist) {
+      var o = function (a, b) { return sign > 0 ? add(a, b) : sub(a, b); };
+      return blk('tile_at', {
+        X: o(blk('x_pos'), mul(fn('sin', blk('direction')), dist)),
+        Y: o(blk('y_pos'), mul(fn('cos', blk('direction')), dist))
+      });
+    };
+    player.scripts.push(script(30, 30, [
+      blk('when_start'),
+      blk('hide'),
+      blk('goto_xy', { X: 784, Y: 144 }),
+      blk('point_dir', { DIR: 90 }),
+      C('forever', null, [
+        C('if', { COND: key('left') }, [blk('turn_ccw', { DEG: 4 })]),
+        C('if', { COND: key('right') }, [blk('turn_cw', { DEG: 4 })]),
+        C('if', { COND: key('up') }, [C('if', { COND: eq(ahead(1, 14), '') }, [blk('move', { STEPS: 3 })])]),
+        C('if', { COND: key('down') }, [C('if', { COND: eq(ahead(-1, 14), '') }, [blk('move', { STEPS: -3 })])]),
+        C('if', { COND: eq(ahead(1, 24), EXIT) }, [blk('broadcast', { MSG: WIN }), blk('stop', { WHAT: 'this' })])
+      ])
+    ]));
+
+    var screen = sprite(U.uid('spr'), SE.t('Ekran'), blank(), { visible: false });
+    var S = scope(screen), g = S.get;
+    ['px', 'py', 'pd', 'i', 'dx', 'dy', 'rx', 'ry', 'd', 'h', 'sx'].forEach(function (n) { S.v(n); });
+    S.v('ang', SE.t('açı'));
+    S.v('kind', SE.t('tür'));
+    S.v('lit', SE.t('ışık'));
+    var DRAW = SE.t('çiz');
+    function band(colors) {
+      return [
+        blk('pen_color', { C: colors[0] }),
+        C('if', { COND: gt(g('lit'), 0.5) }, [blk('pen_color', { C: colors[1] })]),
+        C('if', { COND: gt(g('lit'), 1.5) }, [blk('pen_color', { C: colors[2] })]),
+        C('if', { COND: gt(g('lit'), 2.5) }, [blk('pen_color', { C: colors[3] })])
+      ];
+    }
+    var mx = blk('mod', { A: g('rx'), B: 32 });
+    screen.scripts.push(script(30, 30, [blk('when_start'), blk('hide'), C('forever', null, [procCall(DRAW)])]));
+    screen.scripts.push({ x: 30, y: 200, block: procDef(DRAW, [
+      blk('pen_clear'),
+      blk('pen_color', { C: '#3d4a3e' }),
+      blk('pen_size', { S: 190 }),
+      blk('goto_xy', { X: -320, Y: -95 }),
+      blk('pen_down'),
+      blk('goto_xy', { X: 320, Y: -95 }),
+      blk('pen_up'),
+      blk('pen_size', { S: 9 }),
+      S.set('px', blk('prop_of', { SPRITE: PLAYER, PROP: 'x' })),
+      S.set('py', blk('prop_of', { SPRITE: PLAYER, PROP: 'y' })),
+      S.set('pd', blk('prop_of', { SPRITE: PLAYER, PROP: 'dir' })),
+      C('for_range', { VAR: S.id('i'), FROM: 0, TO: 59 }, [
+        S.set('ang', add(sub(g('pd'), 30), g('i'))),
+        S.set('dx', mul(fn('sin', g('ang')), 4)),
+        S.set('dy', mul(fn('cos', g('ang')), 4)),
+        S.set('rx', g('px')),
+        S.set('ry', g('py')),
+        S.set('d', 0),
+        C('repeat_until', { COND: blk('or', { A: blk('not', { A: eq(blk('tile_at', { X: g('rx'), Y: g('ry') }), '') }), B: gt(g('d'), 700) }) }, [
+          S.chg('rx', g('dx')),
+          S.chg('ry', g('dy')),
+          S.chg('d', 4)
+        ]),
+        S.set('kind', blk('tile_at', { X: g('rx'), Y: g('ry') })),
+        S.set('d', mul(g('d'), fn('cos', sub(g('ang'), g('pd'))))),
+        S.set('h', div(13000, add(g('d'), 1))),
+        C('if', { COND: gt(g('h'), 380) }, [S.set('h', 380)]),
+        S.set('lit', 0),
+        C('if', { COND: lt(g('d'), 420) }, [S.set('lit', 1)]),
+        C('if', { COND: lt(g('d'), 240) }, [S.set('lit', 2)]),
+        C('if', { COND: lt(g('d'), 110) }, [S.set('lit', 3)]),
+        C('if', { COND: blk('or', { A: lt(mx, 4), B: gt(blk('mod', { A: g('rx'), B: 32 }), 28) }) }, [S.chg('lit', -1)]),
+        C('if_else', { COND: eq(g('kind'), BRICK) },
+          band(['#3a1714', '#6e2a24', '#a23c33', '#d4594b']),
+          [C('if_else', { COND: eq(g('kind'), EXIT) },
+            band(['#5a4300', '#9a7400', '#d9a800', '#ffd23f']),
+            band(['#2c3038', '#585e6c', '#8a91a2', '#bcc3d2']))]),
+        S.set('sx', add(-236, mul(g('i'), 8))),
+        blk('goto_xy', { X: g('sx'), Y: div(g('h'), 2) }),
+        blk('pen_down'),
+        blk('goto_xy', { X: g('sx'), Y: sub(0, div(g('h'), 2)) }),
+        blk('pen_up')
+      ])
+    ]) });
+
+    var info = infoSprite(SE.t('← → dön, ↑ ↓ yürü. Sarı duvarı bul!'), 140);
+    info.scripts.push(script(30, 180, [
+      blk('when_msg', { MSG: WIN }),
+      blk('play_sfx', { SFX: 'win' }),
+      blk('say', { TEXT: SE.t('Çıkışı buldun! 🎉') }),
+      blk('wait', { SECS: 2 }),
+      blk('stop', { WHAT: 'all' })
+    ]));
+
+    return {
+      format: 'stackit-1', name: SE.t('Labirent 3D'), stage: st,
+      tileset: StackitLib.tileset(32),
+      levels: [{ id: 'lvl_1', name: SE.t('Labirent'), cells: cells, place: {}, bgColor: '', backdrop: '' }],
+      sprites: [info, player, screen], messages: [WIN]
+    };
+  };
+
   Ex.list = [
     { id: 'platformer', name: SE.t('Platform Macerası'), make: Ex.platformer },
-    { id: 'shooter', name: SE.t('Uzay Atıcı'), make: Ex.shooter }
+    { id: 'shooter', name: SE.t('Uzay Atıcı'), make: Ex.shooter },
+    { id: 'cube3d', name: SE.t('3D Küp'), make: Ex.cube3d },
+    { id: 'maze3d', name: SE.t('Labirent 3D'), make: Ex.maze3d }
   ];
 })();

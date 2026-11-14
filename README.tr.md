@@ -59,6 +59,8 @@ Arayüz **Türkçe ve İngilizce**; sistem diline göre kendiliğinden seçilir 
 | ![Adım tabanlı müzik yapıcı çalarken](docs/screenshots/tr/music.png) | ![Robo karakterinin piksel editöründe açık hali](docs/screenshots/tr/costumes.png) |
 | **Android tablette** | **Uzay Atıcı örneği** |
 | ![Android tablette editör ve çalışan oyun](docs/screenshots/tr/android.png) | ![Uzay Atıcı oyunundan bir an](docs/screenshots/tr/game.png) |
+| **Labirent 3D — bloklarla ışın izleme** | **3D Küp — kalem + matematik** |
+| ![Labirent 3D örneği: ışın izleme betiği ve 3D çizilmiş koridor](docs/screenshots/tr/maze.png) | ![Derinliğe göre kalınlaşan kenarlarıyla dönen tel kafes küp](docs/screenshots/tr/cube.png) |
 
 <a id="ozellikler"></a>
 
@@ -77,12 +79,15 @@ Arayüz **Türkçe ve İngilizce**; sistem diline göre kendiliğinden seçilir 
 | **Fonksiyonlar** | Parametreli kendi blokların; "ekranı yenilemeden çalıştır" (warp) seçeneği. |
 | **Projelerim** | Açılışta proje ekranı: *Yeni proje oluştur* (boş ya da örnekten), *Devam et*, önizlemeli proje kartları, arama, sıralama; yeniden adlandır / çoğalt / indir / sil. Projeler IndexedDB'de otomatik kaydedilir. |
 | **Dışa aktarma** | `.stackit` proje dosyası indir / içe aktar. **Tek dosya HTML oyun**: her tarayıcıda açılır, telefonda otomatik dokunmatik yön tuşları + A tuşu. |
+| **3D görünümlü oyunlar** | Özel 3D bloğu yok: *3D Küp* ve *Labirent 3D* örnekleri kalem, matematik ve liste bloklarıyla 3D görüntünün nasıl yapıldığını gösterir — döndürme ve perspektif yansıtma, karo haritası üzerinde Wolfenstein tarzı ışın izleme. |
 | **İki dil** | Türkçe ve İngilizce arayüz, blok metinleri, örnek projeler ve dışa aktarılan oyunlar — sistem diline göre seçilir. |
 
 ## 🎮 Örnek projeler
 
 - **Platform Macerası** — karo haritalı 2 seviye (Çayır → Kale), hareketli asansör, soru kutusu, diken ve lav, altın toplama, düşmanın üstüne zıplama, arka plan müziği.
 - **Uzay Atıcı** — klonlarla mermiler ve düşmanlar, tuş olayları, parçacık patlamaları.
+- **3D Küp** — dönen tel kafes küp: köşeler `sin`/`cos` ile döndürülür, perspektifle yansıtılır; öndeki kenarlar kalın ve parlak, arkadakiler ince ve soluk. Fareyle sürükleyerek döndür.
+- **Labirent 3D** — Wolfenstein tarzı: her ekran sütunu için bir ışın, bir karoya çarpana kadar ilerler; yakın duvarlar daha uzun ve parlak çizilir. Labirent *Harita & Seviyeler* sekmesinde; istediğin gibi yeniden boyayabilirsin.
 
 Projelerim ekranındaki **Örnekten başla** bölümünden açılır.
 

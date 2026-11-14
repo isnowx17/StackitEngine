@@ -59,6 +59,8 @@ The interface is available in **English and Turkish** and follows your system la
 | ![Step-based music maker while playing](docs/screenshots/en/music.png) | ![The Robo sprite open in the pixel editor](docs/screenshots/en/costumes.png) |
 | **On an Android tablet** | **Space Shooter example** |
 | ![The editor and a running game on an Android tablet](docs/screenshots/en/android.png) | ![A moment from the Space Shooter game](docs/screenshots/en/game.png) |
+| **3D Maze — raycasting made of blocks** | **3D Cube — pen + math** |
+| ![The 3D Maze example: the raycasting script and a corridor drawn in 3D](docs/screenshots/en/maze.png) | ![A spinning wireframe cube with depth-scaled edges](docs/screenshots/en/cube.png) |
 
 <a id="features"></a>
 
@@ -77,12 +79,15 @@ The interface is available in **English and Turkish** and follows your system la
 | **Functions** | Your own blocks with parameters; optional "run without screen refresh" (warp). |
 | **My Projects** | A start screen with *Create new project* (blank or from an example), *Continue*, project cards with previews, search and sorting; rename / duplicate / download / delete. Projects are saved automatically to IndexedDB. |
 | **Export** | Download / import `.stackit` project files. **Single-file HTML games** that open in any browser and show touch controls on phones. |
+| **3D-looking games** | No special 3D blocks: the *3D Cube* and *3D Maze* examples show how pen, math and list blocks create a 3D look — rotation and perspective projection, and Wolfenstein-style raycasting over a tile map. |
 | **Two languages** | English and Turkish UI, block texts, examples and exported games — picked from the system language. |
 
 ## 🎮 Example projects
 
 - **Platform Adventure** — two tile-map levels (Meadow → Castle), a moving lift, a question box, spikes and lava, coin collecting, stomping on the enemy, background music.
 - **Space Shooter** — clone-powered bullets and enemies, key events, particle explosions.
+- **3D Cube** — a spinning wireframe cube: vertices rotated with `sin`/`cos`, projected with perspective, front edges thick and bright, back edges thin and dim. Drag with the mouse to spin it.
+- **3D Maze** — Wolfenstein-style: one ray per screen column steps forward until it hits a tile; nearer walls are drawn taller and brighter. The maze lives in the *Map & Levels* tab, so you can repaint it.
 
 Open them from the **Start from an example** section on the *My Projects* screen.
 

@@ -15,7 +15,10 @@
     return [
       { id: 'blank', name: SE.t('Boş proje'), desc: SE.t('Robo ve boş bir sahne. Her şeyi sen kur.'), make: Ex.blank },
       { id: 'platformer', name: SE.t('Platform Macerası'), desc: SE.t('Karo haritası, 2 seviye, asansör, düşman ve müzik.'), make: Ex.platformer },
-      { id: 'shooter', name: SE.t('Uzay Atıcı'), desc: SE.t('Klonlarla mermiler, düşman dalgaları, patlamalar.'), make: Ex.shooter }
+      { id: 'shooter', name: SE.t('Uzay Atıcı'), desc: SE.t('Klonlarla mermiler, düşman dalgaları, patlamalar.'), make: Ex.shooter },
+      // kalemle çizilen 3D örnekler: önizleme için birkaç kare çalıştırılır (sesleri yok)
+      { id: 'cube3d', name: SE.t('3D Küp'), desc: SE.t('Dönen tel kafes küp: yalnızca kalem ve matematik bloklarıyla 3D görünüm.'), make: Ex.cube3d, simulate: true },
+      { id: 'maze3d', name: SE.t('Labirent 3D'), desc: SE.t('Wolfenstein tarzı ışın izleme; labirenti Harita sekmesinde değiştir.'), make: Ex.maze3d, simulate: true }
     ];
   };
 
@@ -218,7 +221,7 @@
   Home.tplThumb = function (t, img) {
     var self = this;
     if (this.tplThumbs[t.id]) { img.src = this.tplThumbs[t.id]; return; }
-    this.app.makeThumb(t.make()).then(function (src) {
+    this.app.makeThumb(t.make(), { simulate: t.simulate }).then(function (src) {
       self.tplThumbs[t.id] = src;
       img.src = src;
     }, function () {});
@@ -305,7 +308,7 @@
         var p = t.make();
         p.name = self.uniqueName(name.value.trim() || (t.id === 'blank' ? SE.t('Oyunum') : t.name));
         ok.disabled = true;
-        app.createProject(p).then(close, function (err) {
+        app.createProject(p, { simulate: t.simulate }).then(close, function (err) {
           ok.disabled = false;
           UI.toast(SE.t('Proje oluşturulamadı: {err}', { err: err && err.message ? err.message : err }), 'err');
         });

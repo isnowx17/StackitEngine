@@ -134,18 +134,18 @@
     });
   };
   /* projeyi depoya yeni kayıt olarak ekle (açmadan) */
-  App.storeNew = function (data, thumb) {
+  App.storeNew = function (data, thumb, opts) {
     var self = this, id = StackitStore.newId(), p = normalize(data), now = Date.now();
     var meta = { id: id, name: p.name, created: now, modified: now, sprites: p.sprites.length, levels: p.levels.length, thumb: thumb || '' };
-    var t = thumb ? Promise.resolve(thumb) : this.makeThumb(p).catch(function () { return ''; });
+    var t = thumb ? Promise.resolve(thumb) : this.makeThumb(p, opts).catch(function () { return ''; });
     return t.then(function (src) {
       meta.thumb = src;
       return StackitStore.put(id, p, meta);
     }).then(function () { return id; });
   };
-  App.createProject = function (data) {
+  App.createProject = function (data, opts) {
     var self = this;
-    return this.storeNew(data).then(function (id) {
+    return this.storeNew(data, null, opts).then(function (id) {
       self.goProject(id);
       return id;
     });
@@ -183,7 +183,8 @@
     }, function () {});
   };
   /* proje önizlemesi: görünmez bir motorla başlangıç karesini çiz */
-  App.makeThumb = function (p) {
+  /* opts.simulate: kalemle çizilen projeler için önce birkaç kare çalıştır (ses çıkarmayan şablonlarda kullanılır) */
+  App.makeThumb = function (p, opts) {
     var self = this;
     if (!this.thumbEngine) this.thumbEngine = new SE.Engine(document.createElement('canvas'), { headless: true });
     var job = function () {
@@ -204,20 +205,31 @@
           else setTimeout(wait, 30);
         })();
       }).then(function () {
+        if (opts && opts.simulate) {
+          e.start();
+          for (var n = 0; n < 24; n++) e.step();
+        }
         e.render();
-        var W = 256, H = Math.round((W * e.H) / e.W);
-        var c = document.createElement('canvas');
-        c.width = W;
-        c.height = H;
-        var g = c.getContext('2d');
-        g.imageSmoothingEnabled = true;
-        g.imageSmoothingQuality = 'high';
-        g.drawImage(e.canvas, 0, 0, W, H);
-        return c.toDataURL('image/jpeg', 0.82);
+        if (e.running) {
+          e.running = false;
+          e.threads = [];
+        }
+        return self.canvasThumb(e.canvas, e.W, e.H);
       });
     };
     this._thumbQ = (this._thumbQ || Promise.resolve()).then(job, job);
     return this._thumbQ;
+  };
+  App.canvasThumb = function (canvas, w, h) {
+    var W = 256, H = Math.round((W * h) / w);
+    var c = document.createElement('canvas');
+    c.width = W;
+    c.height = H;
+    var g = c.getContext('2d');
+    g.imageSmoothingEnabled = true;
+    g.imageSmoothingQuality = 'high';
+    g.drawImage(canvas, 0, 0, W, H);
+    return c.toDataURL('image/jpeg', 0.82);
   };
 
   /* ---------------- proje ---------------- */
@@ -394,7 +406,11 @@
     this.projectMeta = meta;
     this.setSaveState('saving');
     var wantThumb = (opts && opts.thumb) || !meta.thumb || Date.now() - (this._thumbAt || 0) > 5000;
-    var thumb = wantThumb ? this.makeThumb(p).catch(function () { return meta.thumb; }) : Promise.resolve(meta.thumb);
+    // oyun çalışıyorsa önizleme sahnenin o anki görüntüsünden alınır (kalemle çizilen oyunlar da doğru görünür)
+    var live = this.engine.running && !this.engine.paused;
+    var thumb = !wantThumb ? Promise.resolve(meta.thumb)
+      : live ? Promise.resolve(this.canvasThumb(this.engine.canvas, this.engine.W, this.engine.H))
+        : this.makeThumb(p).catch(function () { return meta.thumb; });
     return thumb.then(function (src) {
       if (wantThumb) self._thumbAt = Date.now();
       meta.thumb = src || meta.thumb;
