@@ -3,11 +3,12 @@
   var U = SE.util;
   var NOTES = [84, 83, 81, 79, 77, 76, 74, 72, 71, 69, 67, 65, 64, 62, 60];
   var SOLFEGE = { 0: 'Do', 2: 'Re', 4: 'Mi', 5: 'Fa', 7: 'Sol', 9: 'La', 11: 'Si' };
-  var DRUMS = [['hat', 'Zil'], ['snare', 'Trampet'], ['kick', 'Davul']];
+  var LETTERS = { 0: 'C', 2: 'D', 4: 'E', 5: 'F', 7: 'G', 9: 'A', 11: 'B' };
+  var DRUMS = [['hat', SE.t('Zil')], ['snare', SE.t('Trampet')], ['kick', SE.t('Davul')]];
   var ROW_H = 22, LABEL_W = 64;
   var peaksCache = new Map();
 
-  function noteName(m) { return SOLFEGE[m % 12] + Math.floor(m / 12 - 1); }
+  function noteName(m) { return (SE.lang === 'tr' ? SOLFEGE : LETTERS)[m % 12] + Math.floor(m / 12 - 1); }
   function icon(path) {
     return '<svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="' + path + '"/></svg>';
   }
@@ -29,7 +30,7 @@
     r.innerHTML = '';
     var side = UI.el('div', 'cos-side');
     var add = UI.el('div', 'cos-add');
-    [['+ Müzik', 'new'], ['Hazır', 'lib'], ['Yükle', 'upload']].forEach(function (b) {
+    [[SE.t('+ Müzik'), 'new'], [SE.t('Hazır'), 'lib'], [SE.t('Yükle'), 'upload']].forEach(function (b) {
       var x = UI.el('button', 'btn small', b[0]);
       x.type = 'button';
       x.addEventListener('click', function (e) { self.add(b[1], e); });
@@ -54,13 +55,13 @@
 
   P.uniqueName = function (base) {
     var names = this.target.sounds.map(function (s) { return s.name; }), name = base, n = 2;
-    var root = base.replace(/\d+$/, '') || 'ses';
+    var root = base.replace(/\d+$/, '') || SE.t('ses');
     while (names.indexOf(name) >= 0) name = root + n++;
     return name;
   };
   P.push = function (s) {
     s.id = U.uid('snd');
-    s.name = this.uniqueName(s.name || 'ses');
+    s.name = this.uniqueName(s.name || SE.t('ses'));
     this.target.sounds.push(s);
     this.sel = this.target.sounds.length - 1;
     this.changed(true);
@@ -73,7 +74,7 @@
   P.add = function (kind, ev) {
     var self = this;
     if (kind === 'new') {
-      this.push({ type: 'music', name: 'müzik', bpm: 120, steps: 16, wave: 'square', notes: [], drums: [] });
+      this.push({ type: 'music', name: SE.t('müzik'), bpm: 120, steps: 16, wave: 'square', notes: [], drums: [] });
     } else if (kind === 'lib') {
       var r = ev.target.getBoundingClientRect();
       UI.menu(r.left, r.bottom + 4, StackitLib.melodies.map(function (m) { return { label: '♪ ' + m.name, value: m.id }; }), function (id) {
@@ -84,18 +85,18 @@
       UI.pickFile('audio/*').then(function (file) {
         if (!file) return;
         if (file.size > 4 * 1024 * 1024) {
-          UI.toast('Ses dosyası çok büyük (en fazla 4 MB). Kısa bir efekt dene.', 'err');
+          UI.toast(SE.t('Ses dosyası çok büyük (en fazla 4 MB). Kısa bir efekt dene.'), 'err');
           return;
         }
         var rd = new FileReader();
         rd.onload = function () {
-          var snd = { type: 'audio', name: file.name.replace(/\.[^.]+$/, '').slice(0, 24) || 'ses', src: rd.result, dur: 0 };
+          var snd = { type: 'audio', name: file.name.replace(/\.[^.]+$/, '').slice(0, 24) || SE.t('ses'), src: rd.result, dur: 0 };
           SE.audio.decode(snd.src).then(function (buf) {
             snd.dur = Math.round(buf.duration * 100) / 100;
             self.push(snd);
-            if (file.size > 1024 * 1024) UI.toast('Büyük ses dosyası: tarayıcı deposu dolabilir, projeyi "İndir" ile de kaydet.');
+            if (file.size > 1024 * 1024) UI.toast(SE.t('Büyük ses dosyası: tarayıcı deposu dolabilir, projeyi "İndir" ile de kaydet.'));
           }, function () {
-            UI.toast('Bu ses dosyası çözülemedi (mp3, wav veya ogg dene)', 'err');
+            UI.toast(SE.t('Bu ses dosyası çözülemedi (mp3, wav veya ogg dene)'), 'err');
           });
         };
         rd.readAsDataURL(file);
@@ -113,7 +114,7 @@
       ic.innerHTML = icon(s.type === 'music' ? IC_MUSIC : IC_WAVE);
       it.appendChild(ic);
       it.appendChild(UI.el('span', 'cos-name', s.name));
-      it.appendChild(UI.el('span', 'cos-dim', s.type === 'music' ? s.bpm + ' bpm · ' + s.steps + ' adım' : (s.dur ? s.dur + ' sn' : 'ses')));
+      it.appendChild(UI.el('span', 'cos-dim', s.type === 'music' ? SE.t('{bpm} bpm · {steps} adım', { bpm: s.bpm, steps: s.steps }) : (s.dur ? SE.t('{n} sn', { n: s.dur }) : SE.t('ses'))));
       it.addEventListener('click', function () {
         if (self.sel !== i) self.stop();
         self.sel = i;
@@ -122,12 +123,12 @@
       it.addEventListener('contextmenu', function (e) {
         e.preventDefault();
         UI.menu(e.clientX, e.clientY, [
-          { label: 'Yeniden adlandır', value: 'ren' },
-          { label: 'Çoğalt', value: 'dup' },
-          { label: 'Sil', value: 'del', danger: true }
+          { label: SE.t('Yeniden adlandır'), value: 'ren' },
+          { label: SE.t('Çoğalt'), value: 'dup' },
+          { label: SE.t('Sil'), value: 'del', danger: true }
         ], function (v) {
           if (v === 'ren') {
-            UI.prompt('Sesi yeniden adlandır', 'Ad', s.name).then(function (n) {
+            UI.prompt(SE.t('Sesi yeniden adlandır'), SE.t('Ad'), s.name).then(function (n) {
               if (!n || n === s.name) return;
               var old = s.name;
               s.name = self.uniqueName(n);
@@ -169,7 +170,7 @@
       var hint = UI.el('div', 'ws-hint');
       hint.style.position = 'static';
       hint.style.height = '100%';
-      hint.innerHTML = '<b>Henüz ses yok</b><span>"+ Müzik" ile notalar ve davullarla kendi müziğini yap,<br>"Hazır" ile örnek bir melodi ekle ya da bir ses dosyası yükle.</span>';
+      hint.innerHTML = SE.t('<b>Henüz ses yok</b><span>"+ Müzik" ile notalar ve davullarla kendi müziğini yap,<br>"Hazır" ile örnek bir melodi ekle ya da bir ses dosyası yükle.</span>');
       m.appendChild(hint);
       return;
     }
@@ -188,7 +189,7 @@
       self.changed(true);
       self.render();
     });
-    bar.appendChild(UI.el('span', 'flabel', 'Ad'));
+    bar.appendChild(UI.el('span', 'flabel', SE.t('Ad')));
     bar.appendChild(name);
     this.playBtn = UI.el('button', 'btn small play-btn');
     this.playBtn.type = 'button';
@@ -211,14 +212,14 @@
         self.restartIfPlaying();
         self.changed();
       });
-      tb.appendChild(UI.el('span', 'flabel', 'Tempo'));
+      tb.appendChild(UI.el('span', 'flabel', SE.t('Tempo')));
       tb.appendChild(bpm);
       var steps = document.createElement('select');
       steps.className = 'field';
       [16, 32].forEach(function (n) {
         var o = document.createElement('option');
         o.value = n;
-        o.textContent = n + ' adım';
+        o.textContent = SE.t('{n} adım', { n: n });
         steps.appendChild(o);
       });
       steps.value = s.steps;
@@ -231,10 +232,10 @@
       tb.appendChild(steps);
       var wave = document.createElement('select');
       wave.className = 'field';
-      SE.blocks.menus.waves.forEach(function (w) {
+      SE.blocks.menuOptions('waves').forEach(function (w) {
         var o = document.createElement('option');
         o.value = w[1];
-        o.textContent = 'Ses: ' + w[0];
+        o.textContent = SE.t('Ses: {w}', { w: w[0] });
         wave.appendChild(o);
       });
       wave.value = s.wave || 'square';
@@ -244,7 +245,7 @@
         self.changed();
       });
       tb.appendChild(wave);
-      var clr = UI.el('button', 'btn small', 'Temizle');
+      var clr = UI.el('button', 'btn small', SE.t('Temizle'));
       clr.type = 'button';
       clr.addEventListener('click', function () {
         s.notes = [];
@@ -253,7 +254,7 @@
         self.drawGrid();
       });
       tb.appendChild(clr);
-      tb.appendChild(UI.el('span', 'cos-size', 'Hücreye tıkla: nota/davul ekle · Sürükle: boya'));
+      tb.appendChild(UI.el('span', 'cos-size', SE.t('Hücreye tıkla: nota/davul ekle · Sürükle: boya')));
       m.appendChild(tb);
       var wrap = UI.el('div', 'seq-wrap');
       var cv = document.createElement('canvas');
@@ -272,7 +273,7 @@
       var wc = document.createElement('canvas');
       wc.className = 'wave-canvas';
       box.appendChild(wc);
-      box.appendChild(UI.el('div', 'cos-size', (s.dur ? s.dur + ' saniye · ' : '') + Math.round((s.src.length * 0.75) / 1024) + ' KB'));
+      box.appendChild(UI.el('div', 'cos-size', (s.dur ? SE.t('{n} saniye · ', { n: s.dur }) : '') + Math.round((s.src.length * 0.75) / 1024) + ' KB'));
       m.appendChild(box);
       this.drawWave(wc, s);
     }
@@ -492,7 +493,7 @@
   P.syncPlay = function () {
     if (!this.playBtn) return;
     var on = this.handle && !this.handle.done;
-    this.playBtn.innerHTML = icon(on ? IC_STOP : IC_PLAY) + (on ? 'Durdur' : 'Çal');
+    this.playBtn.innerHTML = icon(on ? IC_STOP : IC_PLAY) + (on ? SE.t('Durdur') : SE.t('Çal'));
     this.playBtn.classList.toggle('on', !!on);
   };
 

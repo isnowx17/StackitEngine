@@ -144,11 +144,11 @@
             var opts = B.menuOptions(ad.menu, env);
             var r = m.getBoundingClientRect();
             var items = opts.map(function (o) { return { label: o[0], value: o[1], check: o[1] === inp.value }; });
-            if (!items.length) items = [{ label: '(seçenek yok)', value: '__none__' }];
+            if (!items.length) items = [{ label: SE.t('(seçenek yok)'), value: '__none__' }];
             UI.menu(r.left, r.bottom + 4, items, function (v) {
               if (v === '__none__') return;
               if (v === '__new__') {
-                UI.prompt('Yeni mesaj', 'Mesaj adı', 'mesaj' + ((env.project.messages || []).length + 1)).then(function (name) {
+                UI.prompt(SE.t('Yeni mesaj'), SE.t('Mesaj adı'), SE.t('mesaj') + ((env.project.messages || []).length + 1)).then(function (name) {
                   if (!name) return;
                   env.project.messages = env.project.messages || [];
                   if (env.project.messages.indexOf(name) < 0) env.project.messages.push(name);
@@ -172,7 +172,7 @@
   }
 
   function fill(container, text, b, def, env) {
-    parseText(text).forEach(function (p) {
+    parseText(SE.t(text)).forEach(function (p) {
       if (p.label != null) {
         if (p.label.trim()) container.appendChild(label(p.label));
       } else {
@@ -207,7 +207,7 @@
     el.style.setProperty('--cl', col.l);
 
     if (b.op === 'proc_def') {
-      el.appendChild(label('tanımla'));
+      el.appendChild(label(SE.t('tanımla')));
       var nm = label(b.proc || '?');
       nm.classList.add('proc-name');
       el.appendChild(nm);

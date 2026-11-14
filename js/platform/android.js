@@ -21,12 +21,12 @@
         return Filesystem.writeFile({ path: filename, data: text, directory: 'CACHE', encoding: 'utf8' });
       })
       .then(function (res) {
-        return Share.share({ title: filename, dialogTitle: filename + ' — kaydet ya da paylaş', files: [res.uri] });
+        return Share.share({ title: filename, dialogTitle: SE.t('{name} — kaydet ya da paylaş', { name: filename }), files: [res.uri] });
       })
       .catch(function (err) {
         var msg = String((err && err.message) || err);
         if (/cancel/i.test(msg)) return;
-        UI.toast('Dosya paylaşılamadı: ' + msg, 'err');
+        UI.toast(SE.t('Dosya paylaşılamadı: {msg}', { msg: msg }), 'err');
       });
   };
 

@@ -994,3 +994,7 @@ body.view-loading #topbar, body.view-loading #main { display: none; }
 body.stage-small #stage-mode, body.stage-small #fps { display: none; }
 body.stage-small .lvl-select { max-width: 120px; }
 #stage-bar { min-width: 0; }
+
+/* dil seçici */
+.lang-pick { display: inline-flex; align-items: center; gap: 6px; color: var(--muted); }
+.lang-pick select.field { width: auto; height: 32px; }

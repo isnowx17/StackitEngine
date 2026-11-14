@@ -18,7 +18,8 @@
     "android:sync": "node scripts/build-web.js --android && cap sync android",
     "android:apk": "npm run android:sync && cd android && ./gradlew assembleRelease bundleRelease",
     "android:icons": "capacitor-assets generate --android --iconBackgroundColor \"#191c29\" --iconBackgroundColorDark \"#191c29\" --splashBackgroundColor \"#11131d\" --splashBackgroundColorDark \"#11131d\"",
-    "dist:win-setup": "electron-builder --win nsis"
+    "dist:win-setup": "electron-builder --win nsis",
+    "i18n:check": "node scripts/i18n-check.js"
   },
   "build": {
     "appId": "com.stackit.engine",
@@ -32,9 +33,9 @@
       "index.html",
       "css/**/*",
       "js/**/*",
-      "!js/platform/**",
       "electron/**/*",
-      "package.json"
+      "package.json",
+      "!js/platform/**"
     ],
     "asar": true,
     "compression": "maximum",

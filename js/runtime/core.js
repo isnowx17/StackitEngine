@@ -13,6 +13,7 @@
 SE.module('core', function (SE) {
   SE.VERSION = '1.0.0';
   var U = (SE.util = {});
+  var T = function (s) { return SE.t ? SE.t(s) : s; };
 
   U.isNumeric = function (v) {
     if (typeof v === 'number') return !isNaN(v);
@@ -34,9 +35,9 @@ SE.module('core', function (SE) {
 
   U.toStr = function (v) {
     if (v == null) return '';
-    if (typeof v === 'boolean') return v ? 'doğru' : 'yanlış';
+    if (typeof v === 'boolean') return T(v ? 'doğru' : 'yanlış');
     if (typeof v === 'number') {
-      if (!isFinite(v)) return v > 0 ? 'Sonsuz' : v < 0 ? '-Sonsuz' : '0';
+      if (!isFinite(v)) return v > 0 ? T('Sonsuz') : v < 0 ? T('-Sonsuz') : '0';
       if (Number.isInteger(v)) return String(v);
       return String(parseFloat(v.toFixed(10)));
     }

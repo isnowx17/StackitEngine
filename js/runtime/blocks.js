@@ -49,6 +49,7 @@ SE.module('blocks', function (SE) {
     'abcdefghijklmnopqrstuvwxyz0123456789'.split('').forEach(function (c) { o.push([c, c]); });
     return o;
   };
+  M.keys.fixed = true;
   M.touch = function (env) { return [['fare', '_mouse_'], ['kenar', '_edge_']].concat(spriteOpts(env, true)); };
   M.collide = function (env) { return [['kenar', '_edge_']].concat(spriteOpts(env, true)); };
   M.goto = function (env) { return [['rastgele konum', '_random_'], ['fare', '_mouse_']].concat(spriteOpts(env, true)); };
@@ -112,10 +113,16 @@ SE.module('blocks', function (SE) {
   M.props = [['x konumu', 'x'], ['y konumu', 'y'], ['yönü', 'dir'], ['boyutu', 'size'], ['kostüm #', 'costume'], ['x hızı', 'vx'], ['y hızı', 'vy'], ['görünürlüğü', 'visible']];
   M.time = [['yıl', 'year'], ['ay', 'month'], ['gün', 'date'], ['haftanın günü', 'day'], ['saat', 'hour'], ['dakika', 'minute'], ['saniye', 'second']];
 
+  /* Sabit menülerin etiketleri çevrilir; kullanıcı içeriği (karakter, değişken, kostüm adı…) olduğu gibi kalır.
+   * Dinamik menülerde sistem seçeneklerinin değeri '_' ile başlar (_mouse_, _edge_, __new__…). */
   function menuOptions(name, env) {
     var m = M[name];
     if (!m) return [];
-    return typeof m === 'function' ? m(env) : m;
+    var list = typeof m === 'function' ? m(env) : m;
+    var all = typeof m !== 'function' || m.fixed;
+    return list.map(function (o) {
+      return all || String(o[1]).charAt(0) === '_' ? [SE.t(o[0]), o[1]] : o;
+    });
   }
 
   /* ---------------- yardımcılar ---------------- */
@@ -984,7 +991,10 @@ SE.module('blocks', function (SE) {
       if (!d) return b;
       Object.keys(d.args).forEach(function (k) {
         var a = d.args[k];
-        b.inputs[k] = { value: a.v == null ? '' : resolveDefault(a.v, env) };
+        var v = a.v == null ? '' : resolveDefault(a.v, env);
+        // metin varsayılanları ve varsayılan mesaj adı arayüz diliyle gelsin ("Merhaba!" → "Hello!")
+        if (typeof v === 'string' && v && (a.t === 'text' || a.menu === 'messages')) v = SE.t(v);
+        b.inputs[k] = { value: v };
       });
       if (d.shape === 'c' || d.shape === 'ccap') b.substacks = { SUBSTACK: null };
       if (d.shape === 'c2') b.substacks = { SUBSTACK: null, SUBSTACK2: null };

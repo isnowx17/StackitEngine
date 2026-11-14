@@ -28,14 +28,14 @@
         return d.cat === cat.id && d.palette !== false && (!d.only || d.only === (isStage ? 'stage' : 'sprite'));
       });
       var sec = UI.el('div', 'pal-sec');
-      var head = UI.el('div', 'pal-head', cat.name);
+      var head = UI.el('div', 'pal-head', SE.t(cat.name));
       head.style.setProperty('--c', col.c);
       sec.appendChild(head);
       var count = 0;
 
       if (cat.id === 'vars' || cat.id === 'lists') {
         var isList = cat.id === 'lists';
-        var mk = UI.el('button', 'pal-btn', isList ? '+ Liste oluştur' : '+ Değişken oluştur');
+        var mk = UI.el('button', 'pal-btn', isList ? SE.t('+ Liste oluştur') : SE.t('+ Değişken oluştur'));
         mk.type = 'button';
         mk.addEventListener('click', function () { app.createVariable(isList); });
         sec.appendChild(mk);
@@ -47,7 +47,7 @@
           var cb = document.createElement('input');
           cb.type = 'checkbox';
           cb.checked = !!it.v.monitor;
-          cb.title = 'Sahnede göster';
+          cb.title = SE.t('Sahnede göster');
           cb.addEventListener('change', function () { app.setMonitor(it.v, cb.checked); });
           row.appendChild(cb);
           var blk = B.create(isList ? 'list' : 'var', env);
@@ -56,14 +56,14 @@
           el.dataset.varId = it.v.id;
           el.dataset.isList = isList ? '1' : '';
           row.appendChild(el);
-          if (it.owner !== app.project.stage) row.appendChild(UI.el('span', 'pal-local', 'yerel'));
+          if (it.owner !== app.project.stage) row.appendChild(UI.el('span', 'pal-local', SE.t('yerel')));
           sec.appendChild(row);
         });
         if (!mine.length) ops = [];
       }
 
       if (cat.id === 'procs') {
-        var mkp = UI.el('button', 'pal-btn', '+ Fonksiyon oluştur');
+        var mkp = UI.el('button', 'pal-btn', SE.t('+ Fonksiyon oluştur'));
         mkp.type = 'button';
         mkp.addEventListener('click', function () { app.createProc(); });
         sec.appendChild(mkp);
@@ -78,7 +78,7 @@
           });
           count++;
         });
-        if (!count) sec.appendChild(UI.el('div', 'pal-note', 'Kendi bloklarını yap: tekrar eden işleri tek bir blokta topla.'));
+        if (!count) sec.appendChild(UI.el('div', 'pal-note', SE.t('Kendi bloklarını yap: tekrar eden işleri tek bir blokta topla.')));
       }
 
       ops.forEach(function (op) {
@@ -88,7 +88,7 @@
         if (d.needs === 'sounds' && !B.menus.sounds(env).length) {
           if (!sec._soundNote) {
             sec._soundNote = true;
-            sec.appendChild(UI.el('div', 'pal-note', '"Sesler" sekmesinden müzik yap ya da ses yükle; çalma blokları burada görünür.'));
+            sec.appendChild(UI.el('div', 'pal-note', SE.t('"Sesler" sekmesinden müzik yap ya da ses yükle; çalma blokları burada görünür.')));
           }
           return;
         }
@@ -98,7 +98,7 @@
 
       if (!count && cat.id !== 'vars' && cat.id !== 'lists' && cat.id !== 'procs') {
         if (!isStage) return;
-        sec.appendChild(UI.el('div', 'pal-note', 'Sahne seçiliyken bu kategoride blok yok. Bir karakter seç.'));
+        sec.appendChild(UI.el('div', 'pal-note', SE.t('Sahne seçiliyken bu kategoride blok yok. Bir karakter seç.')));
       }
 
       self.listEl.appendChild(sec);
@@ -106,7 +106,7 @@
       btn.type = 'button';
       btn.style.setProperty('--c', col.c);
       btn.appendChild(UI.el('span', 'cat-dot'));
-      btn.appendChild(UI.el('span', 'cat-name', cat.name));
+      btn.appendChild(UI.el('span', 'cat-name', SE.t(cat.name)));
       btn.addEventListener('click', function () {
         self.listEl.scrollTo({ top: sec.offsetTop - 6, behavior: 'smooth' });
       });
@@ -136,8 +136,8 @@
     e.preventDefault();
     var app = this.app, id = el.dataset.varId, isList = !!el.dataset.isList;
     UI.menu(e.clientX, e.clientY, [
-      { label: 'Yeniden adlandır', value: 'rename' },
-      { label: 'Sil', value: 'delete', danger: true }
+      { label: SE.t('Yeniden adlandır'), value: 'rename' },
+      { label: SE.t('Sil'), value: 'delete', danger: true }
     ], function (v) {
       if (v === 'rename') app.renameVariable(id, isList);
       else app.deleteVariable(id, isList);

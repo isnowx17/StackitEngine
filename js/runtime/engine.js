@@ -136,8 +136,8 @@ SE.module('engine', function (SE) {
       var i = -1;
       if (typeof v === 'string') {
         for (var k = 0; k < n; k++) if (cs[k].name === v) { i = k; break; }
-        if (i < 0 && v === 'sonraki') i = this.costume + 1;
-        if (i < 0 && v === 'önceki') i = this.costume - 1;
+        if (i < 0 && (v === 'sonraki' || v === 'next')) i = this.costume + 1;
+        if (i < 0 && (v === 'önceki' || v === 'previous')) i = this.costume - 1;
         if (i < 0 && U.isNumeric(v)) i = Math.round(U.toNum(v)) - 1;
       } else i = Math.round(U.toNum(v)) - 1;
       if (i < 0 && typeof v === 'string' && !U.isNumeric(v)) return;
@@ -1162,7 +1162,7 @@ SE.module('engine', function (SE) {
         g.font = '700 12px system-ui,sans-serif';
         g.textAlign = 'center';
         g.textBaseline = 'middle';
-        g.fillText('Oyun durdu — yeniden başlatmak için ▶', W / 2, H - 11);
+        g.fillText(SE.t('Oyun durdu — yeniden başlatmak için ▶'), W / 2, H - 11);
         g.textAlign = 'left';
       }
     }

@@ -11,7 +11,7 @@
     root.appendChild(this.content);
     this.indicator = UI.el('div', 'ws-indicator');
     this.hint = UI.el('div', 'ws-hint');
-    this.hint.innerHTML = '<b>Boş bir sahne!</b><span>Soldaki bloklardan birini sürükleyip buraya bırak.<br>Örn. <i>Olaylar → ▶ oyun başlayınca</i></span>';
+    this.hint.innerHTML = SE.t('<b>Boş bir sahne!</b><span>Soldaki bloklardan birini sürükleyip buraya bırak.<br>Örn. <i>Olaylar → ▶ oyun başlayınca</i></span>');
     root.appendChild(this.hint);
     this.layer = document.getElementById('drag-layer');
     this.views = {};
@@ -22,7 +22,7 @@
 
     var zoom = UI.el('div', 'ws-zoom');
     var self = this;
-    [['+', 'Yakınlaştır', 1.2], ['−', 'Uzaklaştır', 1 / 1.2], ['=', 'Sıfırla', 0]].forEach(function (z) {
+    [['+', SE.t('Yakınlaştır'), 1.2], ['−', SE.t('Uzaklaştır'), 1 / 1.2], ['=', SE.t('Sıfırla'), 0]].forEach(function (z) {
       var b = UI.el('button', null, z[0]);
       b.type = 'button';
       b.title = z[1];
@@ -468,9 +468,9 @@
     if (bel && !bel.classList.contains('template') && bel._blk) {
       var b = bel._blk;
       var items = [];
-      if (b.op === 'proc_def') items.push({ label: 'Fonksiyonu düzenle', value: 'editproc' });
-      items.push({ label: 'Çoğalt', value: 'dup' });
-      items.push({ label: B.isHat(b) ? 'Başlığı sil' : 'Bloğu sil', value: 'del', danger: true });
+      if (b.op === 'proc_def') items.push({ label: SE.t('Fonksiyonu düzenle'), value: 'editproc' });
+      items.push({ label: SE.t('Çoğalt'), value: 'dup' });
+      items.push({ label: B.isHat(b) ? SE.t('Başlığı sil') : SE.t('Bloğu sil'), value: 'del', danger: true });
       UI.menu(e.clientX, e.clientY, items, function (v) {
         if (v === 'del') self.deleteBlock(b);
         else if (v === 'editproc') self.app.editProc(b);
@@ -487,10 +487,10 @@
       return;
     }
     UI.menu(e.clientX, e.clientY, [
-      { label: 'Blokları düzenle', value: 'tidy' },
-      { label: 'Görünümü sıfırla', value: 'reset' },
+      { label: SE.t('Blokları düzenle'), value: 'tidy' },
+      { label: SE.t('Görünümü sıfırla'), value: 'reset' },
       { sep: true },
-      { label: 'Tüm betikleri sil', value: 'clear', danger: true }
+      { label: SE.t('Tüm betikleri sil'), value: 'clear', danger: true }
     ], function (v) {
       if (v === 'tidy') self.tidy();
       else if (v === 'reset') {
@@ -498,7 +498,7 @@
         vw.x = 30; vw.y = 30; vw.zoom = 1;
         self.applyView();
       } else if (v === 'clear') {
-        UI.confirm('Bu karakterin tüm betikleri silinsin mi?', 'Sil').then(function (ok) {
+        UI.confirm(SE.t('Bu karakterin tüm betikleri silinsin mi?'), SE.t('Sil')).then(function (ok) {
           if (!ok) return;
           self.app.snapshot();
           self.target().scripts = [];

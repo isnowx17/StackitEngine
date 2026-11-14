@@ -73,7 +73,7 @@
   UI.bubble = function (target, text) {
     if (bubble) bubble.remove();
     var r = target.getBoundingClientRect();
-    bubble = UI.el('div', 'value-bubble', text === '' ? '(boş)' : text);
+    bubble = UI.el('div', 'value-bubble', text === '' ? SE.t('(boş)') : text);
     document.body.appendChild(bubble);
     var br = bubble.getBoundingClientRect();
     bubble.style.left = Math.max(6, Math.min(window.innerWidth - br.width - 6, r.left + r.width / 2 - br.width / 2)) + 'px';
@@ -147,9 +147,9 @@
         box.appendChild(row);
       });
       var btns = UI.el('div', 'mbtns');
-      var cancel = UI.el('button', 'btn ghost', 'Vazgeç');
+      var cancel = UI.el('button', 'btn ghost', SE.t('Vazgeç'));
       cancel.type = 'button';
-      var ok = UI.el('button', 'btn primary', okLabel || 'Tamam');
+      var ok = UI.el('button', 'btn primary', okLabel || SE.t('Tamam'));
       ok.type = 'submit';
       btns.appendChild(cancel);
       btns.appendChild(ok);
@@ -181,7 +181,7 @@
   };
 
   UI.confirm = function (title, okLabel) {
-    return UI.form(title, [], okLabel || 'Evet').then(function (r) { return !!r; });
+    return UI.form(title, [], okLabel || SE.t('Evet')).then(function (r) { return !!r; });
   };
 
   /* metin genişliği ölçümü (girdi kutularını otomatik boyutlandırmak için) */

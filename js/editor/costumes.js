@@ -9,12 +9,12 @@
     '#b49bff', '#ff7ad9'
   ];
   var TOOLS = [
-    ['pen', 'M4 20l4-1L19 8l-3-3L5 16zM14 7l3 3', 'Kalem (B)'],
-    ['eraser', 'M3 15l8-8 7 7-5 5H7zM11 20h10M7 11l7 7', 'Silgi (E)'],
-    ['fill', 'M4 12l7-7 7 7-7 7zM4 12h14M20 15.5c.8 1.2 1.3 2 1.3 2.7a1.3 1.3 0 0 1-2.6 0c0-.7.5-1.5 1.3-2.7', 'Boya kovası (G)'],
-    ['picker', 'M14 4l6 6M17.5 6.5L8 16l-4 1 1-4 9.5-9.5', 'Renk seçici (I)'],
-    ['line', 'M5 19L19 5', 'Çizgi (L)'],
-    ['rect', 'M4 6h16v12H4z', 'Dikdörtgen (R)']
+    ['pen', 'M4 20l4-1L19 8l-3-3L5 16zM14 7l3 3', SE.t('Kalem (B)')],
+    ['eraser', 'M3 15l8-8 7 7-5 5H7zM11 20h10M7 11l7 7', SE.t('Silgi (E)')],
+    ['fill', 'M4 12l7-7 7 7-7 7zM4 12h14M20 15.5c.8 1.2 1.3 2 1.3 2.7a1.3 1.3 0 0 1-2.6 0c0-.7.5-1.5 1.3-2.7', SE.t('Boya kovası (G)')],
+    ['picker', 'M14 4l6 6M17.5 6.5L8 16l-4 1 1-4 9.5-9.5', SE.t('Renk seçici (I)')],
+    ['line', 'M5 19L19 5', SE.t('Çizgi (L)')],
+    ['rect', 'M4 6h16v12H4z', SE.t('Dikdörtgen (R)')]
   ];
   function icon(path) {
     return '<svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="' + path + '"/></svg>';
@@ -37,13 +37,13 @@
     r.innerHTML = '';
     this.listWrap = UI.el('div', 'cos-side');
     var addRow = UI.el('div', 'cos-add');
-    [['+ Yeni', 'new'], ['Yükle', 'upload'], ['Hazır', 'lib']].forEach(function (b) {
+    [[SE.t('+ Yeni'), 'new'], [SE.t('Yükle'), 'upload'], [SE.t('Hazır'), 'lib']].forEach(function (b) {
       var btn = UI.el('button', 'btn small', b[0]);
       btn.type = 'button';
       btn.addEventListener('click', function (e) { self.addAction(b[1], e); });
       addRow.appendChild(btn);
     });
-    this.backBtn = UI.el('button', 'btn small back-btn', '← Haritaya dön');
+    this.backBtn = UI.el('button', 'btn small back-btn', SE.t('← Haritaya dön'));
     this.backBtn.type = 'button';
     this.backBtn.addEventListener('click', function () { self.app.setTab('map'); });
     this.listWrap.appendChild(this.backBtn);
@@ -58,7 +58,7 @@
     this.nameInp.className = 'field';
     this.nameInp.spellcheck = false;
     this.nameInp.addEventListener('change', function () { self.rename(self.nameInp.value.trim()); });
-    props.appendChild(UI.el('span', 'flabel', 'Ad'));
+    props.appendChild(UI.el('span', 'flabel', SE.t('Ad')));
     props.appendChild(this.nameInp);
     this.scaleSel = document.createElement('select');
     this.scaleSel.className = 'field';
@@ -74,7 +74,7 @@
       c.scale = +self.scaleSel.value;
       self.app.costumeChanged();
     });
-    this.scaleLabel = UI.el('span', 'flabel', 'Ölçek');
+    this.scaleLabel = UI.el('span', 'flabel', SE.t('Ölçek'));
     props.appendChild(this.scaleLabel);
     props.appendChild(this.scaleSel);
     var sm = UI.el('label', 'fcheck');
@@ -87,12 +87,12 @@
       self.app.costumeChanged();
     });
     sm.appendChild(this.smoothCb);
-    sm.appendChild(document.createTextNode(' yumuşat'));
+    sm.appendChild(document.createTextNode(' ' + SE.t('yumuşat')));
     props.appendChild(sm);
-    this.kindLabel = UI.el('span', 'flabel', 'Tür');
+    this.kindLabel = UI.el('span', 'flabel', SE.t('Tür'));
     this.kindSel = document.createElement('select');
     this.kindSel.className = 'field';
-    [['katı', 'solid'], ['tek yönlü', 'oneway'], ['geçilebilir', 'none']].forEach(function (k) {
+    [[SE.t('katı'), 'solid'], [SE.t('tek yönlü'), 'oneway'], [SE.t('geçilebilir'), 'none']].forEach(function (k) {
       var o = document.createElement('option');
       o.value = k[1];
       o.textContent = k[0];
@@ -126,7 +126,7 @@
     [1, 2, 3].forEach(function (n) {
       var b = UI.el('button', 'tool brush', '●');
       b.style.fontSize = 6 + n * 4 + 'px';
-      b.title = 'Fırça ' + n + 'px';
+      b.title = SE.t('Fırça {n}px', { n: n });
       b.type = 'button';
       b.addEventListener('click', function () {
         self.brush = n;
@@ -139,16 +139,16 @@
     this.mirrorBtn = UI.el('button', 'tool');
     this.mirrorBtn.innerHTML = icon('M12 3v18M4 8l4 4-4 4M20 8l-4 4 4 4');
     this.mirrorBtn.type = 'button';
-    this.mirrorBtn.title = 'Ayna çizim (simetrik)';
+    this.mirrorBtn.title = SE.t('Ayna çizim (simetrik)');
     this.mirrorBtn.addEventListener('click', function () {
       self.mirror = !self.mirror;
       self.syncTools();
     });
     tb.appendChild(this.mirrorBtn);
-    [['M9 14L4 9l5-5M4 9h10a6 6 0 0 1 0 12h-3', 'Geri al (Ctrl+Z)', function () { self.undo(); }],
-      ['M4 12h16M8 8l-4 4 4 4M16 8l4 4-4 4', 'Yatay çevir', function () { self.transform('h'); }],
-      ['M12 4v16M8 8l4-4 4 4M8 16l4 4 4-4', 'Dikey çevir', function () { self.transform('v'); }],
-      ['M5 7h14M10 7V4h4v3M7 7l1 13h8l1-13', 'Temizle', function () { self.transform('clear'); }]].forEach(function (a) {
+    [['M9 14L4 9l5-5M4 9h10a6 6 0 0 1 0 12h-3', SE.t('Geri al (Ctrl+Z)'), function () { self.undo(); }],
+      ['M4 12h16M8 8l-4 4 4 4M16 8l4 4-4 4', SE.t('Yatay çevir'), function () { self.transform('h'); }],
+      ['M12 4v16M8 8l4-4 4 4M8 16l4 4 4-4', SE.t('Dikey çevir'), function () { self.transform('v'); }],
+      ['M5 7h14M10 7V4h4v3M7 7l1 13h8l1-13', SE.t('Temizle'), function () { self.transform('clear'); }]].forEach(function (a) {
       var b = UI.el('button', 'tool');
       b.innerHTML = icon(a[0]);
       b.type = 'button';
@@ -180,7 +180,7 @@
     this.customColor = document.createElement('input');
     this.customColor.type = 'color';
     this.customColor.className = 'sw-custom';
-    this.customColor.title = 'Özel renk';
+    this.customColor.title = SE.t('Özel renk');
     this.customColor.addEventListener('input', function () { self.setColor(self.customColor.value); });
     pal.appendChild(this.customColor);
     this.curSw = UI.el('span', 'sw-current');
@@ -248,9 +248,9 @@
       });
       item.addEventListener('contextmenu', function (e) {
         e.preventDefault();
-        var items = [{ label: 'Çoğalt', value: 'dup' }];
-        if (i > 0) items.push({ label: 'Yukarı taşı', value: 'up' });
-        if (t.costumes.length > 1) items.push({ label: 'Sil', value: 'del', danger: true });
+        var items = [{ label: SE.t('Çoğalt'), value: 'dup' }];
+        if (i > 0) items.push({ label: SE.t('Yukarı taşı'), value: 'up' });
+        if (t.costumes.length > 1) items.push({ label: SE.t('Sil'), value: 'del', danger: true });
         UI.menu(e.clientX, e.clientY, items, function (v) {
           if (v === 'dup') {
             var cp = SE.util.clone(c);
@@ -278,7 +278,7 @@
     if (!c) {
       this.nameInp.value = '';
       this.pix = null;
-      this.notice.textContent = isStage ? 'Dekor yok — arka plan rengi görünür. "+ Yeni" ile piksel dekor çiz ya da "Hazır"dan seç.' : 'Kostüm yok.';
+      this.notice.textContent = isStage ? SE.t('Dekor yok — arka plan rengi görünür. "+ Yeni" ile piksel dekor çiz ya da "Hazır"dan seç.') : SE.t('Kostüm yok.');
       this.notice.style.display = '';
       this.draw();
       return;
@@ -295,7 +295,7 @@
     var self = this;
     this.editable = c.w * c.h <= 256 * 256;
     this.notice.style.display = this.editable ? 'none' : '';
-    this.notice.textContent = this.editable ? '' : 'Bu görsel piksel düzenleme için çok büyük (en fazla 256×256). Ad, ölçek ve yumuşatma yine de ayarlanabilir.';
+    this.notice.textContent = this.editable ? '' : SE.t('Bu görsel piksel düzenleme için çok büyük (en fazla 256×256). Ad, ölçek ve yumuşatma yine de ayarlanabilir.');
     var pix = document.createElement('canvas');
     pix.width = c.w;
     pix.height = c.h;
@@ -313,7 +313,7 @@
 
   P.uniqueName = function (base) {
     var names = (this.target.costumes || []).map(function (c) { return c.name; });
-    var root = base.replace(/\d+$/, '') || 'kostüm', n = 2, name = base;
+    var root = base.replace(/\d+$/, '') || SE.t('kostüm'), n = 2, name = base;
     while (names.indexOf(name) >= 0) name = root + n++;
     return name;
   };
@@ -356,16 +356,16 @@
     var self = this, isStage = this.mode === 'stage', isTile = this.mode === 'tile';
     if (kind === 'new') {
       var sizes = isStage
-        ? [['120×90 (önerilen)', '120x90'], ['60×45 (iri piksel)', '60x45'], ['240×180 (ince)', '240x180']]
-        : isTile ? [['16×16 (önerilen)', '16x16'], ['8×8', '8x8'], ['32×32', '32x32']]
+        ? [[SE.t('120×90 (önerilen)'), '120x90'], [SE.t('60×45 (iri piksel)'), '60x45'], [SE.t('240×180 (ince)'), '240x180']]
+        : isTile ? [[SE.t('16×16 (önerilen)'), '16x16'], ['8×8', '8x8'], ['32×32', '32x32']]
           : [['16×16', '16x16'], ['24×24', '24x24'], ['32×32', '32x32'], ['48×48', '48x48'], ['64×64', '64x64']];
-      UI.form(isStage ? 'Yeni dekor' : isTile ? 'Yeni karo' : 'Yeni kostüm', [
-        { key: 'name', label: 'Ad', value: isStage ? 'dekor' : isTile ? 'karo' : 'kostüm' },
-        { key: 'size', label: 'Boyut (piksel)', type: 'select', options: sizes, value: sizes[0][1] }
-      ], 'Oluştur').then(function (r) {
+      UI.form(isStage ? SE.t('Yeni dekor') : isTile ? SE.t('Yeni karo') : SE.t('Yeni kostüm'), [
+        { key: 'name', label: SE.t('Ad'), value: isStage ? SE.t('dekor') : isTile ? SE.t('karo') : SE.t('kostüm') },
+        { key: 'size', label: SE.t('Boyut (piksel)'), type: 'select', options: sizes, value: sizes[0][1] }
+      ], SE.t('Oluştur')).then(function (r) {
         if (!r) return;
         var wh = r.size.split('x');
-        var c = StackitLib.blank(+wh[0], +wh[1], r.name || 'kostüm');
+        var c = StackitLib.blank(+wh[0], +wh[1], r.name || SE.t('kostüm'));
         if (!isStage) c.scale = +wh[0] <= 16 ? 3 : +wh[0] <= 32 ? 2 : 1;
         self.addCostumes([c]);
       });
@@ -376,7 +376,7 @@
       });
     } else if (kind === 'lib') {
       var items = StackitLib.items.map(function (it) { return { label: it.name, value: it.id }; });
-      if (isStage) items = [{ label: 'Gökyüzü', value: '_sky' }, { label: 'Uzay', value: '_space' }];
+      if (isStage) items = [{ label: SE.t('Gökyüzü'), value: '_sky' }, { label: SE.t('Uzay'), value: '_space' }];
       if (isTile) items = StackitLib.tileItems.map(function (it) { return { label: it.name, value: 't:' + it.id }; });
       var r = ev.target.getBoundingClientRect();
       UI.menu(r.left, r.bottom + 4, items, function (id) {
@@ -408,11 +408,11 @@
         var scale = small ? 3 : isStage ? 1 : Math.min(1, 200 / Math.max(w, h));
         scale = Math.round(scale * 100) / 100;
         self.addCostumes([{
-          name: file.name.replace(/\.[^.]+$/, '').slice(0, 30) || 'resim',
+          name: file.name.replace(/\.[^.]+$/, '').slice(0, 30) || SE.t('resim'),
           src: cv.toDataURL('image/png'), w: w, h: h, scale: scale || 1, smooth: !small
         }]);
       };
-      img.onerror = function () { UI.toast('Görsel okunamadı', 'err'); };
+      img.onerror = function () { UI.toast(SE.t('Görsel okunamadı'), 'err'); };
       img.src = reader.result;
     };
     reader.readAsDataURL(file);

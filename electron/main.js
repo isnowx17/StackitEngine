@@ -5,6 +5,14 @@ const path = require('path');
 const ROOT = path.join(__dirname, '..');
 app.setName('Stackit Engine');
 
+// Menü dili sistem diline göre (uygulamanın kendisi de aynı kuralı kullanır)
+const EN = {
+  'Dosya': 'File', 'Çıkış': 'Quit', 'Görünüm': 'View', 'Yeniden yükle': 'Reload', 'Geliştirici araçları': 'Developer tools',
+  'Gerçek boyut': 'Actual size', 'Yakınlaştır': 'Zoom in', 'Uzaklaştır': 'Zoom out', 'Tam ekran': 'Full screen',
+  'Yardım': 'Help', 'Stackit Engine hakkında': 'About Stackit Engine', 'Blok tabanlı 2D oyun motoru.': 'Block-based 2D game engine.'
+};
+const t = (s) => (/^tr/i.test(app.getLocale()) ? s : EN[s] || s);
+
 // Aynı anda tek pencere: ikinci kez açılırsa mevcut pencereyi öne getir
 if (!app.requestSingleInstanceLock()) {
   app.quit();
@@ -57,27 +65,27 @@ if (!app.requestSingleInstanceLock()) {
   function buildMenu() {
     const about = () => dialog.showMessageBox(win, {
       type: 'info',
-      title: 'Stackit Engine hakkında',
+      title: t('Stackit Engine hakkında'),
       message: 'Stackit Engine ' + app.getVersion(),
-      detail: 'Blok tabanlı 2D oyun motoru.\nElectron ' + process.versions.electron + ' · Chromium ' + process.versions.chrome
+      detail: t('Blok tabanlı 2D oyun motoru.') + '\nElectron ' + process.versions.electron + ' · Chromium ' + process.versions.chrome
     });
     // Not: Düzen menüsü (Ctrl+Z vb.) bilerek yok — kısayolları editörün kendisi yönetiyor.
     return Menu.buildFromTemplate([
-      { label: 'Dosya', submenu: [{ role: 'quit', label: 'Çıkış' }] },
+      { label: t('Dosya'), submenu: [{ role: 'quit', label: t('Çıkış') }] },
       {
-        label: 'Görünüm',
+        label: t('Görünüm'),
         submenu: [
-          { role: 'reload', label: 'Yeniden yükle' },
-          { role: 'toggleDevTools', label: 'Geliştirici araçları' },
+          { role: 'reload', label: t('Yeniden yükle') },
+          { role: 'toggleDevTools', label: t('Geliştirici araçları') },
           { type: 'separator' },
-          { role: 'resetZoom', label: 'Gerçek boyut' },
-          { role: 'zoomIn', label: 'Yakınlaştır' },
-          { role: 'zoomOut', label: 'Uzaklaştır' },
+          { role: 'resetZoom', label: t('Gerçek boyut') },
+          { role: 'zoomIn', label: t('Yakınlaştır') },
+          { role: 'zoomOut', label: t('Uzaklaştır') },
           { type: 'separator' },
-          { role: 'togglefullscreen', label: 'Tam ekran' }
+          { role: 'togglefullscreen', label: t('Tam ekran') }
         ]
       },
-      { label: 'Yardım', submenu: [{ label: 'Stackit Engine hakkında', click: about }] }
+      { label: t('Yardım'), submenu: [{ label: t('Stackit Engine hakkında'), click: about }] }
     ]);
   }
 

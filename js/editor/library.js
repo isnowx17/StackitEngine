@@ -69,18 +69,18 @@
 
   Lib.items = [
     {
-      id: 'robo', name: 'Robo', make: function () {
+      id: 'robo', name: SE.t('Robo'), make: function () {
         return [
-          robo('robo-dur', ['....kok..kok....', '....kkk..kkk....']),
-          robo('robo-yürü1', ['...kok....kok...', '...kkk....kkk...']),
-          robo('robo-yürü2', ['.....kok.kok....', '.....kkk.kkk....'])
+          robo(SE.t('robo-dur'), ['....kok..kok....', '....kkk..kkk....']),
+          robo(SE.t('robo-yürü1'), ['...kok....kok...', '...kkk....kkk...']),
+          robo(SE.t('robo-yürü2'), ['.....kok.kok....', '.....kkk.kkk....'])
         ];
       }
     },
     {
-      id: 'slime', name: 'Jöle', make: function () {
+      id: 'slime', name: SE.t('Jöle'), make: function () {
         return [
-          grid('jöle1', [E, E, E, E,
+          grid(SE.t('jöle1'), [E, E, E, E,
             '......kkkk......',
             '....kkggggkk....',
             '...kghggggggk...',
@@ -91,7 +91,7 @@
             '.kggggggggggggk.',
             '.kGGGGGGGGGGGGk.',
             '..kkkkkkkkkkkk..', E, E], SLIME, 3),
-          grid('jöle2', [E, E, E, E, E, E,
+          grid(SE.t('jöle2'), [E, E, E, E, E, E,
             '.....kkkkkk.....',
             '...kkghgggggkk..',
             '..kgggwwggwwggk.',
@@ -104,9 +104,9 @@
       }
     },
     {
-      id: 'coin', name: 'Altın', make: function () {
+      id: 'coin', name: SE.t('Altın'), make: function () {
         return [5.5, 3.8, 1.4, 3.8].map(function (rx, i) {
-          return shape('altın' + (i + 1), 12, 12, function (x, y) {
+          return shape(SE.t('altın') + (i + 1), 12, 12, function (x, y) {
             if (x < 0 || y < 0 || x >= 12 || y >= 12) return false;
             var dx = (x + 0.5 - 6) / rx, dy = (y + 0.5 - 6) / 5.6;
             return dx * dx + dy * dy <= 1;
@@ -120,8 +120,8 @@
       }
     },
     {
-      id: 'heart', name: 'Kalp', make: function () {
-        return [grid('kalp', [E, E,
+      id: 'heart', name: SE.t('Kalp'), make: function () {
+        return [grid(SE.t('kalp'), [E, E,
           '...kkk....kkk...',
           '..krrrk..krrrk..',
           '.krwwrrkkrrrrrk.',
@@ -137,8 +137,8 @@
       }
     },
     {
-      id: 'crate', name: 'Sandık', make: function () {
-        return [grid('sandık', [
+      id: 'crate', name: SE.t('Sandık'), make: function () {
+        return [grid(SE.t('sandık'), [
           'kkkkkkkkkkkkkkkk',
           'kBBBBBBBBBBBBBBk',
           'kBbbbbbbbbbbbbBk',
@@ -158,8 +158,8 @@
       }
     },
     {
-      id: 'flag', name: 'Bayrak', make: function () {
-        return [grid('bayrak', [
+      id: 'flag', name: SE.t('Bayrak'), make: function () {
+        return [grid(SE.t('bayrak'), [
           '.kk.............',
           '.kgkkkkkkkkk....',
           '.kgkrrrrrrrrk...',
@@ -179,7 +179,7 @@
       }
     },
     {
-      id: 'star', name: 'Yıldız', make: function () {
+      id: 'star', name: SE.t('Yıldız'), make: function () {
         var pts = [];
         for (var i = 0; i < 10; i++) {
           var a = -Math.PI / 2 + (i * Math.PI) / 5, r = i % 2 ? 3.3 : 7.6;
@@ -193,12 +193,12 @@
           }
           return c;
         }
-        return [shape('yıldız', 16, 16, inPoly, function (x, y) { return x < 7 && y < 9 ? '#fff6a8' : '#ffd23f'; }, '#a86a00', 3)];
+        return [shape(SE.t('yıldız'), 16, 16, inPoly, function (x, y) { return x < 7 && y < 9 ? '#fff6a8' : '#ffd23f'; }, '#a86a00', 3)];
       }
     },
     {
-      id: 'ball', name: 'Top', make: function () {
-        return [shape('top', 14, 14, function (x, y) {
+      id: 'ball', name: SE.t('Top'), make: function () {
+        return [shape(SE.t('top'), 14, 14, function (x, y) {
           var dx = x + 0.5 - 7, dy = y + 0.5 - 7;
           return dx * dx + dy * dy <= 42;
         }, function (x, y) {
@@ -209,8 +209,8 @@
       }
     },
     {
-      id: 'bullet', name: 'Mermi', make: function () {
-        return [shape('mermi', 8, 8, function (x, y) {
+      id: 'bullet', name: SE.t('Mermi'), make: function () {
+        return [shape(SE.t('mermi'), 8, 8, function (x, y) {
           var dx = x + 0.5 - 4, dy = y + 0.5 - 4;
           return dx * dx + dy * dy <= 12;
         }, function (x, y) {
@@ -220,8 +220,8 @@
       }
     },
     {
-      id: 'ship', name: 'Uzay Gemisi', make: function () {
-        return [grid('gemi', [
+      id: 'ship', name: SE.t('Uzay Gemisi'), make: function () {
+        return [grid(SE.t('gemi'), [
           '.......kk.......',
           '......kwwk......',
           '......kwwk......',
@@ -241,8 +241,8 @@
       }
     },
     {
-      id: 'cloud', name: 'Bulut', make: function () {
-        return [shape('bulut', 24, 12, function (x, y) {
+      id: 'cloud', name: SE.t('Bulut'), make: function () {
+        return [shape(SE.t('bulut'), 24, 12, function (x, y) {
           var cs = [[7, 7, 4.6], [12, 5, 5.2], [17, 7.5, 4.2], [12, 8.5, 4]];
           for (var i = 0; i < cs.length; i++) {
             var dx = x + 0.5 - cs[i][0], dy = y + 0.5 - cs[i][1];
@@ -252,9 +252,9 @@
         }, function (x, y) { return y > 8 ? '#dfe8f5' : '#ffffff'; }, '#a9b7cc', 3)];
       }
     },
-    { id: 'ground', name: 'Zemin', make: function () { return [Lib.ground(96, 10, 5, 'zemin')]; } },
-    { id: 'platform', name: 'Platform', make: function () { return [Lib.ground(32, 6, 4, 'platform')]; } },
-    { id: 'block', name: 'Kare', make: function () { return [Lib.blank(16, 16, 'kare', '#7c5cff')]; } }
+    { id: 'ground', name: SE.t('Zemin'), make: function () { return [Lib.ground(96, 10, 5, SE.t('zemin'))]; } },
+    { id: SE.t('platform'), name: SE.t('Platform'), make: function () { return [Lib.ground(32, 6, 4, SE.t('platform'))]; } },
+    { id: 'block', name: SE.t('Kare'), make: function () { return [Lib.blank(16, 16, SE.t('kare'), '#7c5cff')]; } }
   ];
 
   Lib.make = function (id) {
@@ -275,7 +275,7 @@
         g.fillRect(x, y, 1, 1);
       }
     }
-    return finish(name || 'zemin', c, scale);
+    return finish(name || SE.t('zemin'), c, scale);
   };
 
   Lib.blank = function (w, h, name, fill) {
@@ -287,7 +287,7 @@
       g.fillStyle = fill;
       g.fillRect(1, 1, w - 2, h - 2);
     }
-    return finish(name || 'kostüm', c, w >= 60 ? Math.max(1, Math.round(480 / w)) : 3);
+    return finish(name || SE.t('kostüm'), c, w >= 60 ? Math.max(1, Math.round(480 / w)) : 3);
   };
 
   /* Piksel gökyüzü dekoru: gradyan, güneş, bulutlar, tepeler */
@@ -331,7 +331,7 @@
         g.fillRect(x, y, 1, 1);
       }
     }
-    return finish('gökyüzü', c, 4);
+    return finish(SE.t('gökyüzü'), c, 4);
   };
 
   Lib.spaceBackdrop = function () {
@@ -347,7 +347,7 @@
       g.fillRect(Math.floor(r() * w), Math.floor(r() * h), 1, 1);
     }
     g.globalAlpha = 1;
-    return finish('uzay', c, 4);
+    return finish(SE.t('uzay'), c, 4);
   };
 
   /* ---------------- karolar (16×16, kodla çizilir) ---------------- */
@@ -368,8 +368,8 @@
   }
   var QMARK = ['.####.', '##..##', '....##', '...##.', '..##..', '..##..', '......', '..##..'];
   Lib.tileItems = [
-    { id: 'grass', name: 'çimen', make: function () {
-      return tile('çimen', 'solid', function (set, r) {
+    { id: 'grass', name: SE.t('çimen'), make: function () {
+      return tile(SE.t('çimen'), 'solid', function (set, r) {
         for (var x = 0; x < 16; x++) {
           set(x, 0, '#8af07f');
           set(x, 1, '#4fd866');
@@ -381,25 +381,25 @@
         for (x = 0; x < 16; x++) { set(x, 3, x % 3 === 0 || r() < 0.35 ? '#2ea64a' : '#5a3a1c'); if (x % 4 === 1) set(x, 4, '#2ea64a'); }
       });
     } },
-    { id: 'dirt', name: 'toprak', make: function () { return tile('toprak', 'solid', function (set, r) { dirt(set, r, 0); }); } },
-    { id: 'stone', name: 'taş', make: function () {
-      return tile('taş', 'solid', function (set, r) {
+    { id: 'dirt', name: SE.t('toprak'), make: function () { return tile(SE.t('toprak'), 'solid', function (set, r) { dirt(set, r, 0); }); } },
+    { id: 'stone', name: SE.t('taş'), make: function () {
+      return tile(SE.t('taş'), 'solid', function (set, r) {
         for (var y = 0; y < 16; y++) for (var x = 0; x < 16; x++) {
           var off = Math.floor(y / 8) % 2 ? 4 : 0, bx = (x + off) % 8, by = y % 8;
           set(x, y, by === 7 || bx === 7 ? '#555c70' : by === 0 || bx === 0 ? '#b0b7c9' : r() < 0.1 ? '#7d8599' : '#8b93a7');
         }
       });
     } },
-    { id: 'brick', name: 'tuğla', make: function () {
-      return tile('tuğla', 'solid', function (set, r) {
+    { id: 'brick', name: SE.t('tuğla'), make: function () {
+      return tile(SE.t('tuğla'), 'solid', function (set, r) {
         for (var y = 0; y < 16; y++) for (var x = 0; x < 16; x++) {
           var off = Math.floor(y / 4) % 2 ? 4 : 0, bx = (x + off) % 8, by = y % 4;
           set(x, y, by === 3 || bx === 7 ? '#6e2620' : by === 0 ? '#e0675a' : r() < 0.12 ? '#b03b32' : '#c2453b');
         }
       });
     } },
-    { id: 'plank', name: 'tahta', make: function () {
-      return tile('tahta', 'oneway', function (set) {
+    { id: 'plank', name: SE.t('tahta'), make: function () {
+      return tile(SE.t('tahta'), 'oneway', function (set) {
         for (var y = 0; y < 6; y++) for (var x = 0; x < 16; x++) {
           set(x, y, y === 0 ? '#e7b27a' : y === 5 || x === 0 || x === 15 ? '#6b3f1d' : x === 7 || x === 8 ? '#a8692f' : '#c98a4b');
         }
@@ -408,15 +408,15 @@
         for (y = 6; y < 9; y++) { set(3, y, '#6b3f1d'); set(12, y, '#6b3f1d'); }
       });
     } },
-    { id: 'water', name: 'su', make: function () {
-      return tile('su', 'none', function (set) {
+    { id: 'water', name: SE.t('su'), make: function () {
+      return tile(SE.t('su'), 'none', function (set) {
         for (var y = 2; y < 16; y++) for (var x = 0; x < 16; x++) {
           set(x, y, y === 2 ? (x % 6 < 3 ? '#cde9ff' : '#7cc4ff') : y < 6 ? 'rgba(59,130,246,.78)' : 'rgba(37,99,235,.84)');
         }
       });
     } },
-    { id: 'spikes', name: 'diken', make: function () {
-      return tile('diken', 'none', function (set) {
+    { id: 'spikes', name: SE.t('diken'), make: function () {
+      return tile(SE.t('diken'), 'none', function (set) {
         for (var k = 0; k < 4; k++) {
           for (var h = 0; h < 8; h++) {
             var w = Math.round(((8 - h) / 8) * 2);
@@ -426,15 +426,15 @@
         for (var x = 0; x < 16; x++) set(x, 15, '#5d6478');
       });
     } },
-    { id: 'lava', name: 'lav', make: function () {
-      return tile('lav', 'none', function (set, r) {
+    { id: 'lava', name: SE.t('lav'), make: function () {
+      return tile(SE.t('lav'), 'none', function (set, r) {
         for (var y = 3; y < 16; y++) for (var x = 0; x < 16; x++) {
           set(x, y, y === 3 ? (x % 5 < 3 ? '#ffe066' : '#ff9a3d') : r() < 0.08 ? '#ffd23f' : r() < 0.5 ? '#ff6b1a' : '#f04a12');
         }
       });
     } },
-    { id: 'coin', name: 'altın', make: function () {
-      return tile('altın', 'none', function (set) {
+    { id: 'coin', name: SE.t('altın'), make: function () {
+      return tile(SE.t('altın'), 'none', function (set) {
         for (var y = 0; y < 16; y++) for (var x = 0; x < 16; x++) {
           var dx = x + 0.5 - 8, dy = y + 0.5 - 8, d = dx * dx / 22 + dy * dy / 30;
           if (d > 1) continue;
@@ -443,8 +443,8 @@
         }
       });
     } },
-    { id: 'qbox', name: 'soru kutusu', make: function () {
-      return tile('soru kutusu', 'solid', function (set) {
+    { id: 'qbox', name: SE.t('soru kutusu'), make: function () {
+      return tile(SE.t('soru kutusu'), 'solid', function (set) {
         for (var y = 0; y < 16; y++) for (var x = 0; x < 16; x++) {
           set(x, y, x === 0 || y === 0 || x === 15 || y === 15 ? '#7a4a00' : y === 1 || x === 1 ? '#ffe680' : '#ffc61a');
         }
@@ -457,8 +457,8 @@
         });
       });
     } },
-    { id: 'ice', name: 'buz', make: function () {
-      return tile('buz', 'solid', function (set, r) {
+    { id: 'ice', name: SE.t('buz'), make: function () {
+      return tile(SE.t('buz'), 'solid', function (set, r) {
         for (var y = 0; y < 16; y++) for (var x = 0; x < 16; x++) {
           set(x, y, x === 0 || y === 0 ? '#e8fbff' : x === 15 || y === 15 ? '#5aa9c9' : (x + y) % 9 === 0 ? '#ffffff' : r() < 0.1 ? '#a5e4f5' : '#bdeefa');
         }
@@ -486,24 +486,24 @@
       .concat(hat.map(function (s) { return [s, 'hat']; }));
   }
   Lib.melodies = [
-    { id: 'happy', name: 'neşeli', make: function () {
+    { id: 'happy', name: SE.t('neşeli'), make: function () {
       return {
-        type: 'music', name: 'neşeli', bpm: 140, steps: 32, wave: 'square',
+        type: 'music', name: SE.t('neşeli'), bpm: 140, steps: 32, wave: 'square',
         notes: [[0, 72], [2, 76], [4, 79], [6, 76], [8, 81], [10, 79], [12, 76], [14, 74], [16, 72], [18, 76], [20, 79], [22, 84], [24, 83], [26, 79], [28, 81], [30, 79],
           [0, 60], [8, 60], [16, 65], [24, 67]],
         drums: drums([0, 8, 16, 24], [4, 12, 20, 28], every(2, 4, 32))
       };
     } },
-    { id: 'adventure', name: 'macera', make: function () {
+    { id: 'adventure', name: SE.t('macera'), make: function () {
       return {
-        type: 'music', name: 'macera', bpm: 118, steps: 32, wave: 'triangle',
+        type: 'music', name: SE.t('macera'), bpm: 118, steps: 32, wave: 'triangle',
         notes: [[0, 69], [2, 72], [4, 76], [6, 81], [8, 79], [10, 76], [12, 74], [14, 76], [16, 77], [18, 76], [20, 74], [22, 72], [24, 71], [26, 72], [28, 74], [30, 76],
           [0, 64], [8, 64], [16, 65], [24, 67]],
         drums: drums([0, 6, 8, 16, 22, 24], [4, 12, 20, 28], every(2, 4, 32))
       };
     } },
-    { id: 'beat', name: 'ritim', make: function () {
-      return { type: 'music', name: 'ritim', bpm: 110, steps: 16, wave: 'square', notes: [], drums: drums([0, 8, 10], [4, 12], every(0, 2, 16)) };
+    { id: 'beat', name: SE.t('ritim'), make: function () {
+      return { type: 'music', name: SE.t('ritim'), bpm: 110, steps: 16, wave: 'square', notes: [], drums: drums([0, 8, 10], [4, 12], every(0, 2, 16)) };
     } }
   ];
 

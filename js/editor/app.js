@@ -15,6 +15,9 @@
   /* ---------------- başlatma ---------------- */
   App.init = function () {
     var self = this;
+    // dil: sabit HTML metinlerini çevir
+    document.documentElement.lang = SE.lang;
+    SE.i18n.translateDOM(document.body);
     this.engine = new SE.Engine($('#stage'), { editable: true });
     this.palette = new Palette(this, $('#cats'), $('#blocks'));
     this.ws = new Workspace(this, $('#ws'), $('#palette'));
@@ -37,7 +40,7 @@
     this.engine.on('error', function (err) {
       if (self.errorShown) return;
       self.errorShown = true;
-      UI.toast('Betik hatası: ' + (err && err.message ? err.message : err), 'err');
+      UI.toast(SE.t('Betik hatası: {err}', { err: err && err.message ? err.message : err }), 'err');
     });
 
     this.bindTopbar();
@@ -112,7 +115,7 @@
       return Promise.all([StackitStore.get(id), StackitStore.getMeta(id)]);
     }).then(function (r) {
       if (!r[0]) {
-        UI.toast('Proje bulunamadı', 'err');
+        UI.toast(SE.t('Proje bulunamadı'), 'err');
         self.projectId = null;
         location.hash = '#/';
         return;
@@ -126,7 +129,7 @@
       document.title = self.project.name + ' — Stackit Engine';
       self.setSaveState('saved');
     }, function (err) {
-      UI.toast('Proje açılamadı: ' + (err && err.message ? err.message : err), 'err');
+      UI.toast(SE.t('Proje açılamadı: {err}', { err: err && err.message ? err.message : err }), 'err');
       location.hash = '#/';
     });
   };
@@ -158,11 +161,11 @@
           p = JSON.parse(rd.result);
           if (!p || !p.stage || !Array.isArray(p.sprites)) throw new Error('format');
         } catch (err) {
-          UI.toast('Bu dosya bir Stackit projesi değil', 'err');
+          UI.toast(SE.t('Bu dosya bir Stackit projesi değil'), 'err');
           return;
         }
         p.name = p.name || file.name.replace(/\.[^.]+$/, '');
-        self.createProject(p).then(function () { UI.toast('Proje içe aktarıldı: ' + p.name); });
+        self.createProject(p).then(function () { UI.toast(SE.t('Proje içe aktarıldı: {name}', { name: p.name })); });
       };
       rd.readAsText(file);
     });
@@ -221,11 +224,11 @@
   function normalize(p) {
     p = p || {};
     p.format = 'stackit-1';
-    p.name = p.name || 'Oyunum';
+    p.name = p.name || SE.t('Oyunum');
     p.messages = Array.isArray(p.messages) ? p.messages : [];
     var st = (p.stage = p.stage || {});
     st.id = 'stage';
-    st.name = 'Sahne';
+    st.name = SE.t('Sahne');
     st.width = +st.width || 480;
     st.height = +st.height || 360;
     st.bgColor = st.bgColor || '#f4f6fb';
@@ -243,10 +246,10 @@
       t.solid = t.solid || 'solid';
     });
     ts.nextId = Math.max(+ts.nextId || 0, maxId + 1);
-    if (!Array.isArray(p.levels) || !p.levels.length) p.levels = [{ name: 'Seviye 1' }];
+    if (!Array.isArray(p.levels) || !p.levels.length) p.levels = [{ name: SE.t('Seviye 1') }];
     p.levels.forEach(function (lv, i) {
       lv.id = lv.id || U.uid('lvl');
-      lv.name = lv.name || 'Seviye ' + (i + 1);
+      lv.name = lv.name || SE.t('Seviye {n}', { n: i + 1 });
       lv.cells = lv.cells && typeof lv.cells === 'object' ? lv.cells : {};
       lv.place = lv.place && typeof lv.place === 'object' ? lv.place : {};
       lv.bgColor = lv.bgColor || '';
@@ -255,7 +258,7 @@
     p.sprites = Array.isArray(p.sprites) ? p.sprites : [];
     p.sprites.forEach(function (s) {
       s.id = s.id || U.uid('spr');
-      s.name = s.name || 'Karakter';
+      s.name = s.name || SE.t('Karakter');
       ['costumes', 'scripts', 'variables', 'lists', 'sounds'].forEach(function (k) { if (!Array.isArray(s[k])) s[k] = []; });
       s.physics = s.physics || { body: 'none', gravityScale: 1, bounce: 0, friction: 0.2 };
       s.physics.solidDyn = !!s.physics.solidDyn;
@@ -327,8 +330,8 @@
       if (this.tab === 'costumes') this.costumes.setTarget(t);
       if (this.tab === 'sounds') this.sounds.setTarget(t);
     }
-    $('#tab-costumes').textContent = t === this.project.stage ? 'Dekorlar' : 'Kostümler';
-    $('#target-name').textContent = t === this.project.stage ? 'Sahne' : t.name;
+    $('#tab-costumes').textContent = t === this.project.stage ? SE.t('Dekorlar') : SE.t('Kostümler');
+    $('#target-name').textContent = t === this.project.stage ? SE.t('Sahne') : t.name;
     this.renderSprites();
     this.renderInspector();
   };
@@ -369,10 +372,10 @@
   App.setSaveState = function (st) {
     var el = $('#save-state');
     var map = {
-      dirty: ['•', 'Kaydedilmemiş değişiklikler'],
-      saving: ['…', 'Kaydediliyor'],
-      saved: ['✓', 'Projelerim\'e kaydedildi'],
-      error: ['!', 'Kaydedilemedi — projeyi "İndir" ile dosyaya kaydet']
+      dirty: ['•', SE.t('Kaydedilmemiş değişiklikler')],
+      saving: ['…', SE.t('Kaydediliyor')],
+      saved: ['✓', SE.t('Projelerim\'e kaydedildi')],
+      error: ['!', SE.t('Kaydedilemedi — projeyi "İndir" ile dosyaya kaydet')]
     };
     el.textContent = map[st][0];
     el.title = map[st][1];
@@ -401,7 +404,7 @@
       return true;
     }, function (err) {
       self.setSaveState('error');
-      UI.toast('Kaydedilemedi: ' + (err && err.message ? err.message : err), 'err');
+      UI.toast(SE.t('Kaydedilemedi: {err}', { err: err && err.message ? err.message : err }), 'err');
       return false;
     });
   };
@@ -461,7 +464,7 @@
     $('#btn-pause').classList.toggle('on', e.running && e.paused);
     $('#btn-pause').disabled = !e.running;
     $('#btn-stop').disabled = !e.running;
-    $('#stage-mode').textContent = e.running ? (e.paused ? 'DURAKLATILDI' : 'OYNANIYOR') : 'DÜZENLEME';
+    $('#stage-mode').textContent = e.running ? (e.paused ? SE.t('DURAKLATILDI') : SE.t('OYNANIYOR')) : SE.t('DÜZENLEME');
     this.renderInspector();
     this.syncLevelUI();
     if (!e.running && this.touch) this.touch.releaseAll();
@@ -497,14 +500,14 @@
       }
       tile.appendChild(th);
       tile.appendChild(UI.el('span', 'st-name', s.name));
-      if (s.physics && s.physics.body !== 'none') tile.appendChild(UI.el('span', 'st-badge', s.physics.body === 'dynamic' ? 'D' : 'K'));
+      if (s.physics && s.physics.body !== 'none') tile.appendChild(UI.el('span', 'st-badge', s.physics.body === 'dynamic' ? 'D' : SE.lang === 'tr' ? 'K' : 'S'));
       tile.title = s.name;
       tile.addEventListener('click', function () { self.selectTarget(s.id); });
       tile.addEventListener('contextmenu', function (e) {
         e.preventDefault();
         UI.menu(e.clientX, e.clientY, [
-          { label: 'Çoğalt', value: 'dup' },
-          { label: 'Sil', value: 'del', danger: true }
+          { label: SE.t('Çoğalt'), value: 'dup' },
+          { label: SE.t('Sil'), value: 'del', danger: true }
         ], function (v) {
           if (v === 'dup') self.duplicateSprite(s.id);
           else self.deleteSprite(s.id);
@@ -514,9 +517,9 @@
     });
     var add = UI.el('button', 'sprite-tile add', '+');
     add.type = 'button';
-    add.title = 'Karakter ekle';
+    add.title = SE.t('Karakter ekle');
     add.addEventListener('click', function (e) {
-      var items = [{ label: '✏️ Boş piksel karakter', value: '_blank' }, { label: '⤒ Resim yükle…', value: '_upload' }, { sep: true }]
+      var items = [{ label: SE.t('✏️ Boş piksel karakter'), value: '_blank' }, { label: SE.t('⤒ Resim yükle…'), value: '_upload' }, { sep: true }]
         .concat(StackitLib.items.map(function (it) { return { label: it.name, value: it.id }; }));
       var r = add.getBoundingClientRect();
       UI.menu(r.left, r.top - 8, items, function (v) { self.addSprite(v); });
@@ -550,7 +553,7 @@
     if (kind === '_upload') {
       UI.pickFile('image/*').then(function (file) {
         if (!file) return;
-        var s = StackitExamples.newSprite(self.uniqueSpriteName(file.name.replace(/\.[^.]+$/, '').slice(0, 20) || 'Resim'), []);
+        var s = StackitExamples.newSprite(self.uniqueSpriteName(file.name.replace(/\.[^.]+$/, '').slice(0, 20) || SE.t('Resim')), []);
         self.project.sprites.push(s);
         self.selectTarget(s.id);
         self.costumes.setTarget(s);
@@ -559,12 +562,12 @@
       return;
     }
     if (kind === '_blank') {
-      costumes = [StackitLib.blank(16, 16, 'kostüm1')];
-      name = 'Karakter';
+      costumes = [StackitLib.blank(16, 16, SE.t('kostüm1'))];
+      name = SE.t('Karakter');
     } else {
       costumes = StackitLib.make(kind);
       var it = StackitLib.items.filter(function (i) { return i.id === kind; })[0];
-      name = it ? it.name : 'Karakter';
+      name = it ? it.name : SE.t('Karakter');
     }
     var s = StackitExamples.newSprite(this.uniqueSpriteName(name), costumes);
     var cam = this.engine.editCam;
@@ -609,7 +612,7 @@
   App.deleteSprite = function (id) {
     var self = this, s = this.project.sprites.filter(function (x) { return x.id === id; })[0];
     if (!s) return;
-    UI.confirm('"' + s.name + '" silinsin mi? (betikleri ve kostümleriyle birlikte)', 'Sil').then(function (ok) {
+    UI.confirm(SE.t('"{name}" silinsin mi? (betikleri ve kostümleriyle birlikte)', { name: s.name }), SE.t('Sil')).then(function (ok) {
       if (!ok) return;
       if (self.engine.running) self.engine.stop();
       self.project.sprites = self.project.sprites.filter(function (x) { return x.id !== id; });
@@ -675,23 +678,23 @@
         self.renderSprites();
         self.dirty();
       });
-      row.appendChild(field('Arka plan', col));
-      row.appendChild(field('Yerçekimi', numInput(t.gravity, 0.1, function (v) { t.gravity = v; commit(); })));
+      row.appendChild(field(SE.t('Arka plan'), col));
+      row.appendChild(field(SE.t('Yerçekimi'), numInput(t.gravity, 0.1, function (v) { t.gravity = v; commit(); })));
       var sizes = [['480×360 (4:3)', '480x360'], ['640×360 (16:9)', '640x360'], ['640×480', '640x480'], ['800×450', '800x450'], ['960×540', '960x540']];
-      row.appendChild(field('Sahne boyutu', selectInput(sizes, t.width + 'x' + t.height, function (v) {
+      row.appendChild(field(SE.t('Sahne boyutu'), selectInput(sizes, t.width + 'x' + t.height, function (v) {
         var wh = v.split('x');
         t.width = +wh[0];
         t.height = +wh[1];
         self.applyStageSize();
         commit();
       })));
-      row.appendChild(field('Dokunmatik tuşlar', selectInput([['otomatik (telefonda)', 'auto'], ['her zaman (önizle)', 'on'], ['kapalı', 'off']], t.touch || 'auto', function (v) {
+      row.appendChild(field(SE.t('Dokunmatik tuşlar'), selectInput([[SE.t('otomatik (telefonda)'), 'auto'], [SE.t('her zaman (önizle)'), 'on'], [SE.t('kapalı'), 'off']], t.touch || 'auto', function (v) {
         t.touch = v;
         self.syncTouch();
         self.dirty();
       })));
       fs.appendChild(row);
-      fs.appendChild(UI.el('div', 'insp-note', 'Sahne betikleri tüm oyunu yönetir: skor, seviye, müzik… Dekor çizmek için "Dekorlar" sekmesi.'));
+      fs.appendChild(UI.el('div', 'insp-note', SE.t('Sahne betikleri tüm oyunu yönetir: skor, seviye, müzik… Dekor çizmek için "Dekorlar" sekmesi.')));
       return;
     }
 
@@ -711,7 +714,7 @@
       self.ws.render();
       commit();
     });
-    r1.appendChild(field('Ad', name, 'wide'));
+    r1.appendChild(field(SE.t('Ad'), name, 'wide'));
     var pl = this.getPlacement(t);
     this.insp.x = numInput(Math.round(pl.x), 1, function (v) { self.setPlacement(t, { x: v }); commit(); });
     this.insp.y = numInput(Math.round(pl.y), 1, function (v) { self.setPlacement(t, { y: v }); commit(); });
@@ -722,23 +725,23 @@
     var r2 = UI.el('div', 'insp-row');
     this.insp.direction = numInput(t.direction, 15, function (v) { t.direction = U.wrapDir(v); commit(); });
     this.insp.size = numInput(t.size, 10, function (v) { t.size = U.clamp(v, 1, 5000); commit(); });
-    r2.appendChild(field('Yön', this.insp.direction, 'xs'));
-    r2.appendChild(field('Boyut %', this.insp.size, 'xs'));
-    r2.appendChild(field('Dönüş', selectInput(B.menus.rotstyle, t.rotationStyle, function (v) { t.rotationStyle = v; commit(); })));
+    r2.appendChild(field(SE.t('Yön'), this.insp.direction, 'xs'));
+    r2.appendChild(field(SE.t('Boyut %'), this.insp.size, 'xs'));
+    r2.appendChild(field(SE.t('Dönüş'), selectInput(B.menuOptions('rotstyle'), t.rotationStyle, function (v) { t.rotationStyle = v; commit(); })));
     var vis = document.createElement('input');
     vis.type = 'checkbox';
     vis.checked = pl.visible;
     vis.addEventListener('change', function () { self.setPlacement(t, { visible: vis.checked }); commit(); });
-    r2.appendChild(field('Görünür', vis, 'check'));
+    r2.appendChild(field(SE.t('Görünür'), vis, 'check'));
     fs.appendChild(r2);
     if (this.project.levels.length > 1) {
       var lvNote = UI.el('div', 'insp-note lvl-note');
       var lvName = this.project.levels[this.editLevel].name;
       lvNote.appendChild(document.createTextNode(pl.override
-        ? 'x, y ve görünürlük yalnızca "' + lvName + '" için ayarlı. '
-        : 'Konum tüm seviyelerde aynı. Sahnede sürüklersen yalnızca "' + lvName + '" için değişir. '));
+        ? SE.t('x, y ve görünürlük yalnızca "{level}" için ayarlı. ', { level: lvName })
+        : SE.t('Konum tüm seviyelerde aynı. Sahnede sürüklersen yalnızca "{level}" için değişir. ', { level: lvName })));
       if (pl.override) {
-        var rs = UI.el('button', 'linkbtn', 'Varsayılana dön');
+        var rs = UI.el('button', 'linkbtn', SE.t('Varsayılana dön'));
         rs.type = 'button';
         rs.addEventListener('click', function () { self.resetPlacement(t); });
         lvNote.appendChild(rs);
@@ -748,23 +751,23 @@
 
     var ph = t.physics;
     var r3 = UI.el('div', 'insp-row phys');
-    r3.appendChild(UI.el('span', 'insp-tag', 'Fizik'));
-    r3.appendChild(field('Gövde', selectInput([['yok', 'none'], ['dinamik (düşer, çarpar)', 'dynamic'], ['katı (zemin/duvar)', 'static']], ph.body, function (v) {
+    r3.appendChild(UI.el('span', 'insp-tag', SE.t('Fizik')));
+    r3.appendChild(field(SE.t('Gövde'), selectInput([[SE.t('yok'), 'none'], [SE.t('dinamik (düşer, çarpar)'), 'dynamic'], [SE.t('katı (zemin/duvar)'), 'static']], ph.body, function (v) {
       ph.body = v;
       self.renderSprites();
       self.renderInspector();
       commit();
     })));
     if (ph.body === 'dynamic') {
-      r3.appendChild(field('Yerçekimi ×', numInput(ph.gravityScale, 0.1, function (v) { ph.gravityScale = v; commit(); }), 'xs'));
-      r3.appendChild(field('Sekme', numInput(ph.bounce, 0.1, function (v) { ph.bounce = U.clamp(v, 0, 1.2); commit(); }), 'xs'));
-      r3.appendChild(field('Sürtünme', numInput(ph.friction, 0.05, function (v) { ph.friction = U.clamp(v, 0, 1); commit(); }), 'xs'));
+      r3.appendChild(field(SE.t('Yerçekimi ×'), numInput(ph.gravityScale, 0.1, function (v) { ph.gravityScale = v; commit(); }), 'xs'));
+      r3.appendChild(field(SE.t('Sekme'), numInput(ph.bounce, 0.1, function (v) { ph.bounce = U.clamp(v, 0, 1.2); commit(); }), 'xs'));
+      r3.appendChild(field(SE.t('Sürtünme'), numInput(ph.friction, 0.05, function (v) { ph.friction = U.clamp(v, 0, 1); commit(); }), 'xs'));
       var sd = document.createElement('input');
       sd.type = 'checkbox';
       sd.checked = !!ph.solidDyn;
-      sd.title = 'Açıksa diğer "çarpışan" dinamik karakterlerin içinden geçmez, üstlerinde durabilir';
+      sd.title = SE.t('Açıksa diğer "çarpışan" dinamik karakterlerin içinden geçmez, üstlerinde durabilir');
       sd.addEventListener('change', function () { ph.solidDyn = sd.checked; commit(); });
-      r3.appendChild(field('Dinamiklerle çarpış', sd, 'check'));
+      r3.appendChild(field(SE.t('Dinamiklerle çarpış'), sd, 'check'));
     }
     fs.appendChild(r3);
   };
@@ -824,7 +827,7 @@
     this.project.levels.forEach(function (lv) {
       Object.keys(lv.cells).forEach(function (k) { if (String(lv.cells[k]) === String(id)) used++; });
     });
-    UI.confirm('"' + t.name + '" karosu silinsin mi?' + (used ? ' Haritalarda ' + used + ' yerde kullanılıyor; onlar da silinecek.' : ''), 'Sil').then(function (ok) {
+    UI.confirm(SE.t('"{name}" karosu silinsin mi?', { name: t.name }) + (used ? ' ' + SE.t('Haritalarda {n} yerde kullanılıyor; onlar da silinecek.', { n: used }) : ''), SE.t('Sil')).then(function (ok) {
       if (!ok) return;
       ts.costumes.splice(ts.costumes.indexOf(t), 1);
       ts.currentCostume = Math.min(ts.currentCostume, Math.max(0, ts.costumes.length - 1));
@@ -878,19 +881,19 @@
     if (copyFrom != null) {
       lv = U.clone(lvs[copyFrom]);
       lv.id = U.uid('lvl');
-      lv.name = lvs[copyFrom].name + ' kopya';
+      lv.name = lvs[copyFrom].name + ' ' + SE.t('kopya');
     } else {
-      lv = { id: U.uid('lvl'), name: 'Seviye ' + (lvs.length + 1), cells: this.defaultGround(), place: {}, bgColor: '', backdrop: '' };
+      lv = { id: U.uid('lvl'), name: SE.t('Seviye {n}', { n: lvs.length + 1 }), cells: this.defaultGround(), place: {}, bgColor: '', backdrop: '' };
     }
     lvs.splice(copyFrom != null ? copyFrom + 1 : lvs.length, 0, lv);
     this.setEditLevel(lvs.indexOf(lv));
     this.palette.render();
     this.dirty();
-    UI.toast(lv.name + ' eklendi — Harita sekmesinde çiz');
+    UI.toast(SE.t('{name} eklendi — Harita sekmesinde çiz', { name: lv.name }));
   };
   App.renameLevel = function (i) {
     var self = this, lv = this.project.levels[i];
-    UI.prompt('Seviyeyi yeniden adlandır', 'Ad', lv.name).then(function (n) {
+    UI.prompt(SE.t('Seviyeyi yeniden adlandır'), SE.t('Ad'), lv.name).then(function (n) {
       if (!n) return;
       lv.name = n;
       self.syncLevelUI();
@@ -908,7 +911,7 @@
   App.deleteLevel = function (i) {
     var self = this, lvs = this.project.levels;
     if (lvs.length < 2) return;
-    UI.confirm('"' + lvs[i].name + '" silinsin mi? (haritası ve karakter konumlarıyla)', 'Sil').then(function (ok) {
+    UI.confirm(SE.t('"{name}" silinsin mi? (haritası ve karakter konumlarıyla)', { name: lvs[i].name }), SE.t('Sil')).then(function (ok) {
       if (!ok) return;
       lvs.splice(i, 1);
       self.setEditLevel(Math.min(self.editLevel, lvs.length - 1));
@@ -952,20 +955,20 @@
   /* ---------------- değişkenler ---------------- */
   App.createVariable = function (isList) {
     var self = this, isStage = this.isStageTarget();
-    var fields = [{ key: 'name', label: isList ? 'Liste adı' : 'Değişken adı', value: '' }];
-    if (!isStage) fields.push({ key: 'scope', type: 'radio', options: [['Tüm karakterler için', 'global'], ['Sadece bu karakter için', 'local']], value: 'global' });
-    UI.form(isList ? 'Yeni liste' : 'Yeni değişken', fields, 'Oluştur').then(function (r) {
+    var fields = [{ key: 'name', label: isList ? SE.t('Liste adı') : SE.t('Değişken adı'), value: '' }];
+    if (!isStage) fields.push({ key: 'scope', type: 'radio', options: [[SE.t('Tüm karakterler için'), 'global'], [SE.t('Sadece bu karakter için'), 'local']], value: 'global' });
+    UI.form(isList ? SE.t('Yeni liste') : SE.t('Yeni değişken'), fields, SE.t('Oluştur')).then(function (r) {
       if (!r) return;
       var name = String(r.name || '').trim();
       if (!name) return;
       var owner = r.scope === 'local' ? self.currentTarget() : self.project.stage;
       var key = isList ? 'lists' : 'variables';
       var clash = (self.project.stage[key] || []).concat(owner[key] || []).some(function (v) { return v.name === name; });
-      if (clash) { UI.toast('"' + name + '" adında bir ' + (isList ? 'liste' : 'değişken') + ' zaten var', 'err'); return; }
+      if (clash) { UI.toast(SE.t(isList ? '"{name}" adında bir liste zaten var' : '"{name}" adında bir değişken zaten var', { name: name }), 'err'); return; }
       var v = isList ? { id: U.uid('l'), name: name, items: [] } : { id: U.uid('v'), name: name, value: 0 };
       owner[key].push(v);
       self.changed('vars');
-      UI.toast((isList ? 'Liste' : 'Değişken') + ' oluşturuldu: ' + name);
+      UI.toast(SE.t(isList ? 'Liste oluşturuldu: {name}' : 'Değişken oluşturuldu: {name}', { name: name }));
     });
   };
   App.findVar = function (id, isList) {
@@ -980,7 +983,7 @@
   App.renameVariable = function (id, isList) {
     var self = this, f = this.findVar(id, isList);
     if (!f) return;
-    UI.prompt('Yeniden adlandır', 'Yeni ad', f.v.name).then(function (name) {
+    UI.prompt(SE.t('Yeniden adlandır'), SE.t('Yeni ad'), f.v.name).then(function (name) {
       if (!name) return;
       f.v.name = name;
       self.ws.render();
@@ -990,7 +993,7 @@
   App.deleteVariable = function (id, isList) {
     var self = this, f = this.findVar(id, isList);
     if (!f) return;
-    UI.confirm('"' + f.v.name + '" silinsin mi? Onu kullanan bloklar "?" gösterecek.', 'Sil').then(function (ok) {
+    UI.confirm(SE.t('"{name}" silinsin mi? Onu kullanan bloklar "?" gösterecek.', { name: f.v.name }), SE.t('Sil')).then(function (ok) {
       if (!ok) return;
       f.arr.splice(f.arr.indexOf(f.v), 1);
       self.ws.render();
@@ -1017,15 +1020,15 @@
   }
   App.createProc = function () {
     var self = this, t = this.currentTarget();
-    UI.form('Yeni fonksiyon (kendi bloğun)', [
-      { key: 'name', label: 'Blok adı', value: '', placeholder: 'örn. patla' },
-      { key: 'params', label: 'Parametreler (virgülle)', value: '', placeholder: 'örn. güç, renk' },
-      { key: 'warp', type: 'check', label: 'Ekranı yenilemeden çalıştır (çok hızlı)', value: false }
-    ], 'Oluştur').then(function (r) {
+    UI.form(SE.t('Yeni fonksiyon (kendi bloğun)'), [
+      { key: 'name', label: SE.t('Blok adı'), value: '', placeholder: SE.t('örn. patla') },
+      { key: 'params', label: SE.t('Parametreler (virgülle)'), value: '', placeholder: SE.t('örn. güç, renk') },
+      { key: 'warp', type: 'check', label: SE.t('Ekranı yenilemeden çalıştır (çok hızlı)'), value: false }
+    ], SE.t('Oluştur')).then(function (r) {
       if (!r) return;
       var name = String(r.name || '').trim();
       if (!name) return;
-      if (procDefs(t).some(function (d) { return d.proc === name; })) { UI.toast('Bu adda bir fonksiyon zaten var', 'err'); return; }
+      if (procDefs(t).some(function (d) { return d.proc === name; })) { UI.toast(SE.t('Bu adda bir fonksiyon zaten var'), 'err'); return; }
       self.snapshot();
       self.ws.addScriptVisible({ op: 'proc_def', proc: name, params: parseParams(r.params), warp: !!r.warp, inputs: {}, next: null });
       self.changed('structure');
@@ -1033,11 +1036,11 @@
   };
   App.editProc = function (def) {
     var self = this, t = this.currentTarget();
-    UI.form('Fonksiyonu düzenle', [
-      { key: 'name', label: 'Blok adı', value: def.proc },
-      { key: 'params', label: 'Parametreler (virgülle)', value: (def.params || []).join(', ') },
-      { key: 'warp', type: 'check', label: 'Ekranı yenilemeden çalıştır (çok hızlı)', value: !!def.warp }
-    ], 'Kaydet').then(function (r) {
+    UI.form(SE.t('Fonksiyonu düzenle'), [
+      { key: 'name', label: SE.t('Blok adı'), value: def.proc },
+      { key: 'params', label: SE.t('Parametreler (virgülle)'), value: (def.params || []).join(', ') },
+      { key: 'warp', type: 'check', label: SE.t('Ekranı yenilemeden çalıştır (çok hızlı)'), value: !!def.warp }
+    ], SE.t('Kaydet')).then(function (r) {
       if (!r) return;
       var name = String(r.name || '').trim() || def.proc;
       var oldName = def.proc, oldParams = def.params || [], params = parseParams(r.params);
@@ -1070,7 +1073,7 @@
   App.bindTopbar = function () {
     var self = this;
     $('#project-name').addEventListener('change', function () {
-      self.project.name = this.value.trim() || 'Oyunum';
+      self.project.name = this.value.trim() || SE.t('Oyunum');
       this.value = self.project.name;
       document.title = self.project.name + ' — Stackit Engine';
       self.dirty();
@@ -1086,7 +1089,7 @@
     $('#btn-export').addEventListener('click', function () { self.exportHTML(); });
   };
   App.fileBaseOf = function (name) {
-    return (name || 'oyun').replace(/[^\wçğıöşüÇĞİÖŞÜ\- ]+/g, '').trim().replace(/\s+/g, '-') || 'oyun';
+    return (name || SE.t('oyun')).replace(/[^\wçğıöşüÇĞİÖŞÜ\- ]+/g, '').trim().replace(/\s+/g, '-') || SE.t('oyun');
   };
   App.fileBase = function () { return this.fileBaseOf(this.project.name); };
 
@@ -1095,13 +1098,13 @@
       return 'SE.module(' + JSON.stringify(m.name) + ', ' + m.fn.toString() + ');';
     }).join('\n').replace(/<\/script/gi, '<\\/script');
     var proj = JSON.stringify(this.project).replace(/</g, '\\u003c');
-    var title = String(this.project.name || 'Oyun').replace(/[<>&"]/g, '');
-    var html = '<!doctype html>\n<html lang="tr">\n<head>\n<meta charset="utf-8">\n<meta name="viewport" content="width=device-width,initial-scale=1">\n<title>' + title + '</title>\n' +
+    var title = String(this.project.name || SE.t('Oyun')).replace(/[<>&"]/g, '');
+    var html = '<!doctype html>\n<html lang="' + SE.lang + '">\n<head>\n<meta charset="utf-8">\n<meta name="viewport" content="width=device-width,initial-scale=1">\n<title>' + title + '</title>\n' +
       '<style>html,body{margin:0;height:100%;background:#0d0f1a;display:flex;align-items:center;justify-content:center;overflow:hidden}#game{max-height:100vh}</style>\n</head>\n<body>\n<div id="game"></div>\n' +
-      '<script>\n/* ' + title + ' — Stackit Engine ' + SE.VERSION + ' ile yapıldı */\nwindow.SE={modules:[],module:function(n,f){this.modules.push({name:n,fn:f});f(this);}};\n' + mods +
+      '<script>\n/* ' + SE.t('{title} — Stackit Engine {v} ile yapıldı', { title: title, v: SE.VERSION }) + ' */\nwindow.SE={modules:[],module:function(n,f){this.modules.push({name:n,fn:f});f(this);}};\n' + mods +
       '\nSE.createPlayer(document.getElementById("game"),' + proj + ');\n<\/script>\n</body>\n</html>\n';
     UI.download(this.fileBase() + '.html', html, 'text/html');
-    UI.toast('Oyun tek bir HTML dosyası olarak indirildi — her tarayıcıda açılır!');
+    UI.toast(SE.t('Oyun tek bir HTML dosyası olarak indirildi — her tarayıcıda açılır!'));
   };
 
   /* ---------------- sahne çubuğu ---------------- */
@@ -1138,7 +1141,7 @@
       if (self.view !== 'editor') return;
       if (mod && e.key.toLowerCase() === 's') {
         e.preventDefault();
-        self.save({ thumb: true }).then(function (ok) { if (ok) UI.toast('Kaydedildi'); });
+        self.save({ thumb: true }).then(function (ok) { if (ok) UI.toast(SE.t('Kaydedildi')); });
         return;
       }
       if (typing) return;

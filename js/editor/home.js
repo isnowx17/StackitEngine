@@ -13,24 +13,24 @@
   Home.templates = function () {
     var Ex = StackitExamples;
     return [
-      { id: 'blank', name: 'Boş proje', desc: 'Robo ve boş bir sahne. Her şeyi sen kur.', make: Ex.blank },
-      { id: 'platformer', name: 'Platform Macerası', desc: 'Karo haritası, 2 seviye, asansör, düşman ve müzik.', make: Ex.platformer },
-      { id: 'shooter', name: 'Uzay Atıcı', desc: 'Klonlarla mermiler, düşman dalgaları, patlamalar.', make: Ex.shooter }
+      { id: 'blank', name: SE.t('Boş proje'), desc: SE.t('Robo ve boş bir sahne. Her şeyi sen kur.'), make: Ex.blank },
+      { id: 'platformer', name: SE.t('Platform Macerası'), desc: SE.t('Karo haritası, 2 seviye, asansör, düşman ve müzik.'), make: Ex.platformer },
+      { id: 'shooter', name: SE.t('Uzay Atıcı'), desc: SE.t('Klonlarla mermiler, düşman dalgaları, patlamalar.'), make: Ex.shooter }
     ];
   };
 
   Home.relTime = function (ts) {
     if (!ts) return '';
     var s = Math.round((Date.now() - ts) / 1000);
-    if (s < 45) return 'az önce';
+    if (s < 45) return SE.t('az önce');
     var m = Math.round(s / 60);
-    if (m < 60) return m + ' dk önce';
+    if (m < 60) return SE.t('{n} dk önce', { n: m });
     var h = Math.round(m / 60);
-    if (h < 24) return h + ' saat önce';
+    if (h < 24) return SE.t('{n} saat önce', { n: h });
     var d = Math.round(h / 24);
-    if (d === 1) return 'dün';
-    if (d < 7) return d + ' gün önce';
-    return new Date(ts).toLocaleDateString('tr-TR', { day: 'numeric', month: 'long', year: 'numeric' });
+    if (d === 1) return SE.t('dün');
+    if (d < 7) return SE.t('{n} gün önce', { n: d });
+    return new Date(ts).toLocaleDateString(SE.lang === 'tr' ? 'tr-TR' : 'en-US', { day: 'numeric', month: 'long', year: 'numeric' });
   };
 
   Home.init = function (app) {
@@ -49,6 +49,13 @@
       self.renderGrid();
     });
     document.querySelector('#home .brand').addEventListener('click', function () { self.render(); });
+    // dil: sistem dili / Türkçe / English (değişince sayfa yeniden yüklenir)
+    var ls = document.getElementById('lang-select');
+    ls.value = SE.i18n.pref();
+    ls.addEventListener('change', function () {
+      SE.i18n.setPref(ls.value);
+      location.reload();
+    });
   };
 
   Home.render = function () {
@@ -60,8 +67,8 @@
       self.renderTemplates();
       var note = document.getElementById('home-storage');
       note.textContent = StackitStore.mode() === 'idb'
-        ? 'Projelerin bu tarayıcıda otomatik kaydedilir. Başka bir bilgisayara taşımak için projeyi "İndir" ile dosya olarak al.'
-        : 'Bu tarayıcı geniş depolamayı desteklemiyor; projeler sınırlı alana kaydediliyor. Önemli projeleri "İndir" ile yedekle.';
+        ? SE.t('Projelerin bu tarayıcıda otomatik kaydedilir. Başka bir bilgisayara taşımak için projeyi "İndir" ile dosya olarak al.')
+        : SE.t('Bu tarayıcı geniş depolamayı desteklemiyor; projeler sınırlı alana kaydediliyor. Önemli projeleri "İndir" ile yedekle.');
     });
   };
 
@@ -82,7 +89,7 @@
     var lastId = StackitStore.getLast();
     var sorted = metas.slice().sort(function (a, b) { return (b.modified || 0) - (a.modified || 0); });
     var last = metas.filter(function (m) { return m.id === lastId; })[0] || sorted[0];
-    document.getElementById('home-title').textContent = metas.length ? 'Tekrar hoş geldin! Bugün ne yapıyoruz?' : 'Merhaba! İlk oyununu yapmaya hazır mısın?';
+    document.getElementById('home-title').textContent = metas.length ? SE.t('Tekrar hoş geldin! Bugün ne yapıyoruz?') : SE.t('Merhaba! İlk oyununu yapmaya hazır mısın?');
     if (!last) {
       host.hidden = true;
       return;
@@ -93,10 +100,10 @@
     card.appendChild(this.thumbImg(last.thumb, 'hero-thumb'));
     var info = UI.el('div', 'hero-info');
     var tag = UI.el('span', 'hero-tag');
-    tag.innerHTML = icon(IC_PLAY, 'fill') + 'Devam et';
+    tag.innerHTML = icon(IC_PLAY, 'fill') + SE.t('Devam et');
     info.appendChild(tag);
-    info.appendChild(UI.el('b', 'hero-name', last.name || 'Adsız'));
-    info.appendChild(UI.el('span', 'hero-sub', 'Son düzenleme: ' + this.relTime(last.modified)));
+    info.appendChild(UI.el('b', 'hero-name', last.name || SE.t('Adsız')));
+    info.appendChild(UI.el('span', 'hero-sub', SE.t('Son düzenleme: {t}', { t: this.relTime(last.modified) })));
     card.appendChild(info);
     card.addEventListener('click', function () { app.goProject(last.id); });
     host.appendChild(card);
@@ -115,12 +122,12 @@
     grid.innerHTML = '';
     if (!metas.length) {
       var empty = UI.el('div', 'proj-empty');
-      empty.innerHTML = '<b>Henüz projen yok</b><span>Yukarıdan <i>Yeni proje oluştur</i>\'a bas ya da aşağıdaki örneklerden birini seç.</span>';
+      empty.innerHTML = SE.t('<b>Henüz projen yok</b><span>Yukarıdan <i>Yeni proje oluştur</i>\'a bas ya da aşağıdaki örneklerden birini seç.</span>');
       grid.appendChild(empty);
       return;
     }
     if (!list.length) {
-      grid.appendChild(UI.el('div', 'proj-empty', '"' + this.query + '" ile eşleşen proje yok.'));
+      grid.appendChild(UI.el('div', 'proj-empty', SE.t('"{q}" ile eşleşen proje yok.', { q: this.query })));
       return;
     }
     list.forEach(function (m) {
@@ -128,25 +135,25 @@
       card.tabIndex = 0;
       card.appendChild(self.thumbImg(m.thumb));
       var info = UI.el('div', 'proj-info');
-      info.appendChild(UI.el('b', 'proj-name', m.name || 'Adsız'));
+      info.appendChild(UI.el('b', 'proj-name', m.name || SE.t('Adsız')));
       var bits = [self.relTime(m.modified)];
-      if (m.sprites != null) bits.push(m.sprites + ' karakter');
-      if (m.levels > 1) bits.push(m.levels + ' seviye');
+      if (m.sprites != null) bits.push(m.sprites === 1 ? SE.t('1 karakter') : SE.t('{n} karakter', { n: m.sprites }));
+      if (m.levels > 1) bits.push(SE.t('{n} seviye', { n: m.levels }));
       info.appendChild(UI.el('span', 'proj-sub', bits.join(' · ')));
       card.appendChild(info);
       var more = UI.el('button', 'proj-more');
       more.type = 'button';
-      more.title = 'Seçenekler';
+      more.title = SE.t('Seçenekler');
       more.innerHTML = icon(IC_MORE);
       card.appendChild(more);
       var menu = function (x, y) {
         UI.menu(x, y, [
-          { label: 'Aç', value: 'open' },
-          { label: 'Yeniden adlandır', value: 'ren' },
-          { label: 'Çoğalt', value: 'dup' },
-          { label: 'İndir (.stackit)', value: 'dl' },
+          { label: SE.t('Aç'), value: 'open' },
+          { label: SE.t('Yeniden adlandır'), value: 'ren' },
+          { label: SE.t('Çoğalt'), value: 'dup' },
+          { label: SE.t('İndir (.stackit)'), value: 'dl' },
           { sep: true },
-          { label: 'Sil', value: 'del', danger: true }
+          { label: SE.t('Sil'), value: 'del', danger: true }
         ], function (v) { self.action(v, m); });
       };
       more.addEventListener('click', function (e) {
@@ -174,7 +181,7 @@
     var self = this, app = this.app;
     if (v === 'open') app.goProject(m.id);
     else if (v === 'ren') {
-      UI.prompt('Projeyi yeniden adlandır', 'Proje adı', m.name).then(function (name) {
+      UI.prompt(SE.t('Projeyi yeniden adlandır'), SE.t('Proje adı'), m.name).then(function (name) {
         if (!name || name === m.name) return;
         StackitStore.get(m.id).then(function (p) {
           if (!p) return;
@@ -186,22 +193,22 @@
     } else if (v === 'dup') {
       StackitStore.get(m.id).then(function (p) {
         if (!p) return;
-        p.name = self.uniqueName((m.name || 'Proje') + ' kopya');
+        p.name = self.uniqueName((m.name || SE.t('Proje')) + ' ' + SE.t('kopya'));
         return app.storeNew(p, m.thumb);
       }).then(function () {
         self.render();
-        UI.toast('Proje çoğaltıldı');
+        UI.toast(SE.t('Proje çoğaltıldı'));
       });
     } else if (v === 'dl') {
       StackitStore.get(m.id).then(function (p) {
         if (p) UI.download(app.fileBaseOf(p.name) + '.stackit', JSON.stringify(p), 'application/json');
       });
     } else if (v === 'del') {
-      UI.confirm('"' + (m.name || 'Adsız') + '" kalıcı olarak silinsin mi? Bu geri alınamaz.', 'Sil').then(function (ok) {
+      UI.confirm(SE.t('"{name}" kalıcı olarak silinsin mi? Bu geri alınamaz.', { name: m.name || SE.t('Adsız') }), SE.t('Sil')).then(function (ok) {
         if (!ok) return;
         StackitStore.remove(m.id).then(function () {
           self.render();
-          UI.toast('Proje silindi');
+          UI.toast(SE.t('Proje silindi'));
         });
       });
     }
@@ -245,17 +252,17 @@
     return start.then(function () {
       var back = UI.el('div', 'modal-back');
       var box = UI.el('form', 'modal modal-wide');
-      box.appendChild(UI.el('h3', null, 'Yeni proje oluştur'));
+      box.appendChild(UI.el('h3', null, SE.t('Yeni proje oluştur')));
       var row = UI.el('label', 'mrow');
-      row.appendChild(UI.el('span', 'mlabel', 'Proje adı'));
+      row.appendChild(UI.el('span', 'mlabel', SE.t('Proje adı')));
       var name = document.createElement('input');
       name.type = 'text';
-      name.placeholder = 'Oyunum';
+      name.placeholder = SE.t('Oyunum');
       name.spellcheck = false;
       name.maxLength = 60;
       row.appendChild(name);
       box.appendChild(row);
-      box.appendChild(UI.el('span', 'mlabel', 'Nasıl başlamak istersin?'));
+      box.appendChild(UI.el('span', 'mlabel', SE.t('Nasıl başlamak istersin?')));
       var pick = UI.el('div', 'tpl-pick'), chosen = preset || 'blank';
       self.templates().forEach(function (t) {
         var opt = UI.el('button', 'tpl-opt' + (t.id === chosen ? ' on' : ''));
@@ -277,11 +284,11 @@
       });
       box.appendChild(pick);
       var btns = UI.el('div', 'mbtns');
-      var cancel = UI.el('button', 'btn ghost', 'Vazgeç');
+      var cancel = UI.el('button', 'btn ghost', SE.t('Vazgeç'));
       cancel.type = 'button';
       var ok = UI.el('button', 'btn primary');
       ok.type = 'submit';
-      ok.innerHTML = icon(IC_PLUS) + 'Oluştur';
+      ok.innerHTML = icon(IC_PLUS) + SE.t('Oluştur');
       btns.appendChild(cancel);
       btns.appendChild(ok);
       box.appendChild(btns);
@@ -296,11 +303,11 @@
         e.preventDefault();
         var t = self.templates().filter(function (x) { return x.id === chosen; })[0];
         var p = t.make();
-        p.name = self.uniqueName(name.value.trim() || (t.id === 'blank' ? 'Oyunum' : t.name));
+        p.name = self.uniqueName(name.value.trim() || (t.id === 'blank' ? SE.t('Oyunum') : t.name));
         ok.disabled = true;
         app.createProject(p).then(close, function (err) {
           ok.disabled = false;
-          UI.toast('Proje oluşturulamadı: ' + (err && err.message ? err.message : err), 'err');
+          UI.toast(SE.t('Proje oluşturulamadı: {err}', { err: err && err.message ? err.message : err }), 'err');
         });
       });
     });

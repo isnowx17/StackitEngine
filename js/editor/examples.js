@@ -41,7 +41,7 @@
   }
   function stage(props) {
     return Object.assign({
-      id: 'stage', name: 'Sahne', width: 480, height: 360, bgColor: '#f4f6fb', gravity: 0.8,
+      id: 'stage', name: SE.t('Sahne'), width: 480, height: 360, bgColor: '#f4f6fb', gravity: 0.8,
       currentCostume: 0, costumes: [], scripts: [], variables: [], lists: []
     }, props || {});
   }
@@ -51,12 +51,12 @@
 
   /* ---------- Boş proje ---------- */
   Ex.blank = function () {
-    var robo = sprite(U.uid('spr'), 'Robo', StackitLib.make('robo'), { rotationStyle: 'lr' });
+    var robo = sprite(U.uid('spr'), SE.t('Robo'), StackitLib.make('robo'), { rotationStyle: 'lr' });
     robo.scripts.push(script(30, 30, [
       blk('when_start'),
-      blk('say_for', { TEXT: 'Merhaba! Ben Robo.', SECS: 2 })
+      blk('say_for', { TEXT: SE.t('Merhaba! Ben Robo.'), SECS: 2 })
     ]));
-    return { format: 'stackit-1', name: 'Yeni Oyun', stage: stage(), sprites: [robo], messages: ['mesaj1'] };
+    return { format: 'stackit-1', name: SE.t('Yeni Oyun'), stage: stage(), sprites: [robo], messages: [SE.t('mesaj1')] };
   };
 
   /* ---------- Örnek: Platform Macerası (karo haritası + 2 seviye) ---------- */
@@ -104,21 +104,21 @@
     [[10, -2], [11, -2], [12, -2], [25, -1], [26, -1], [27, -1], [28, -1], [35, -1], [44, -4], [45, -4]].forEach(function (q) { L2.set(q[0], q[1], T.coin); });
 
     var song = StackitLib.melodies[0].make();
-    song.name = 'tema';
+    song.name = SE.t('tema');
     song.id = 'snd_tema';
     var st = stage({
       bgColor: '#9bd4ff', costumes: [StackitLib.skyBackdrop(), StackitLib.spaceBackdrop()],
-      variables: [{ id: SKOR, name: 'skor', value: 0, monitor: true }],
+      variables: [{ id: SKOR, name: SE.t('skor'), value: 0, monitor: true }],
       sounds: [song]
     });
     st.scripts.push(script(30, 30, [
       blk('when_start'),
       blk('set_var', { VAR: SKOR, V: '0' }),
       blk('set_gravity', { G: 0.8 }),
-      blk('play_music', { SOUND: 'tema' })
+      blk('play_music', { SOUND: SE.t('tema') })
     ]));
 
-    var robo = sprite(ROBO, 'Robo', StackitLib.make('robo'), {
+    var robo = sprite(ROBO, SE.t('Robo'), StackitLib.make('robo'), {
       x: -160, y: -100, rotationStyle: 'lr',
       physics: { body: 'dynamic', gravityScale: 1, bounce: 0, friction: 0.25 }
     });
@@ -139,7 +139,7 @@
         ]),
         C('if_else', { COND: blk('and', { A: blk('on_ground'), B: blk('gt', { A: blk('math', { FN: 'abs', A: blk('vx') }), B: '0.5' }) }) },
           [blk('play_anim', { FROM: 2, TO: 3, FPS: 8 })],
-          [blk('switch_costume', { COSTUME: 'robo-dur' })]),
+          [blk('switch_costume', { COSTUME: SE.t('robo-dur') })]),
         C('if', { COND: tile(T.coin) }, [
           blk('replace_touching', { TILE: String(T.coin), NEW: '_empty_' }),
           blk('play_sfx', { SFX: 'coin' }),
@@ -152,22 +152,22 @@
           blk('particles', { N: 20, C: '#ffd23f' })
         ]),
         C('if', { COND: blk('or', { A: blk('lt', { A: blk('y_pos'), B: '-400' }), B: blk('or', { A: tile(T.spike), B: tile(T.lava) }) }) }, [
-          blk('broadcast', { MSG: 'öldün' })
+          blk('broadcast', { MSG: SE.t('öldün') })
         ])
       ])
     ]));
     robo.scripts.push(script(800, 30, [
-      blk('when_msg', { MSG: 'öldün' }),
+      blk('when_msg', { MSG: SE.t('öldün') }),
       blk('play_sfx', { SFX: 'lose' }),
       blk('cam_shake', { S: 8, SECS: 0.4 }),
       blk('particles', { N: 30, C: '#ff4d6d' }),
       blk('goto_xy', { X: -160, Y: -100 }),
       blk('set_vel', { VX: 0, VY: 0 })
     ]));
-    robo.scripts.push(script(800, 290, [blk('when_msg', { MSG: 'zıplat' }), blk('set_vy', { V: 10 })]));
-    robo.scripts.push(script(800, 400, [blk('when_start'), blk('say_for', { TEXT: '← → yürü, ↑ zıpla!', SECS: 2.5 })]));
+    robo.scripts.push(script(800, 290, [blk('when_msg', { MSG: SE.t('zıplat') }), blk('set_vy', { V: 10 })]));
+    robo.scripts.push(script(800, 400, [blk('when_start'), blk('say_for', { TEXT: SE.t('← → yürü, ↑ zıpla!'), SECS: 2.5 })]));
 
-    var lift = sprite('spr_asansor', 'Asansör', [StackitLib.ground(32, 6, 4, 'asansör')], {
+    var lift = sprite('spr_asansor', SE.t('Asansör'), [StackitLib.ground(32, 6, 4, SE.t('asansör'))], {
       x: 1120, y: -140, physics: { body: 'static', gravityScale: 1, bounce: 0, friction: 0.2 }
     });
     lift.scripts.push(script(30, 30, [
@@ -183,7 +183,7 @@
       ], [blk('hide')])
     ]));
 
-    var slime = sprite('spr_jole', 'Jöle', StackitLib.make('slime'), {
+    var slime = sprite('spr_jole', SE.t('Jöle'), StackitLib.make('slime'), {
       x: 1504, y: -100, direction: -90, rotationStyle: 'lr',
       physics: { body: 'dynamic', gravityScale: 1, bounce: 0, friction: 0.2 }
     });
@@ -201,14 +201,14 @@
             C('if_else', { COND: blk('gt', { A: blk('prop_of', { SPRITE: ROBO, PROP: 'y' }), B: blk('add', { A: blk('y_pos'), B: 20 }) }) }, [
               blk('play_sfx', { SFX: 'hit' }),
               blk('particles', { N: 24, C: '#3ddc68' }),
-              blk('broadcast', { MSG: 'zıplat' }),
+              blk('broadcast', { MSG: SE.t('zıplat') }),
               blk('change_var', { VAR: SKOR, V: 5 }),
               blk('hide'),
               blk('wait', { SECS: 3 }),
               blk('goto_xy', { X: 1504, Y: -100 }),
               blk('show')
             ], [
-              blk('broadcast', { MSG: 'öldün' }),
+              blk('broadcast', { MSG: SE.t('öldün') }),
               blk('wait', { SECS: 0.5 })
             ])
           ])
@@ -216,36 +216,36 @@
       ], [blk('hide')])
     ]));
 
-    var flag = sprite('spr_bayrak', 'Bayrak', StackitLib.make('flag'), { x: 1872, y: -96 });
+    var flag = sprite('spr_bayrak', SE.t('Bayrak'), StackitLib.make('flag'), { x: 1872, y: -96 });
     flag.scripts.push(script(30, 30, [
       blk('when_level'),
       blk('wait_until', { COND: blk('touching', { TARGET: ROBO }) }),
       blk('play_sfx', { SFX: 'win' }),
       C('if_else', { COND: blk('lt', { A: blk('level_num'), B: blk('level_count') }) }, [
         blk('particles', { N: 40, C: '#7c5cff' }),
-        blk('say_for', { TEXT: 'Harika! Sıradaki seviye…', SECS: 1.2 }),
+        blk('say_for', { TEXT: SE.t('Harika! Sıradaki seviye…'), SECS: 1.2 }),
         blk('goto_level', { LEVEL: '_next_' })
       ], [
         blk('particles', { N: 70, C: '#ffd23f' }),
         blk('stop_music'),
-        blk('say', { TEXT: blk('join', { A: 'Kazandın! Skor: ', B: v(SKOR) }) }),
+        blk('say', { TEXT: blk('join', { A: SE.t('Kazandın! Skor: '), B: v(SKOR) }) }),
         blk('wait', { SECS: 2 }),
         blk('stop', { WHAT: 'all' })
       ])
     ]));
 
     return {
-      format: 'stackit-1', name: 'Platform Macerası', stage: st,
+      format: 'stackit-1', name: SE.t('Platform Macerası'), stage: st,
       tileset: StackitLib.tileset(32),
       levels: [
-        { id: 'lvl_1', name: 'Çayır', cells: L1.c, place: {}, bgColor: '', backdrop: 'gökyüzü' },
+        { id: 'lvl_1', name: SE.t('Çayır'), cells: L1.c, place: {}, bgColor: '', backdrop: SE.t('gökyüzü') },
         {
-          id: 'lvl_2', name: 'Kale', cells: L2.c, bgColor: '#1b1733', backdrop: 'uzay',
+          id: 'lvl_2', name: SE.t('Kale'), cells: L2.c, bgColor: '#1b1733', backdrop: SE.t('uzay'),
           place: { spr_asansor: { x: 1120, y: -140, visible: false }, spr_jole: { x: 1504, y: -100, visible: false }, spr_bayrak: { x: 1552, y: -96, visible: true } }
         }
       ],
       sprites: [lift, flag, slime, robo],
-      messages: ['öldün', 'zıplat']
+      messages: [SE.t('öldün'), SE.t('zıplat')]
     };
   };
 
@@ -254,11 +254,11 @@
     var SHIP = 'spr_gemi', BUL = 'spr_mermi', EN = 'spr_dusman', SKOR = 'v_skor';
     var st = stage({
       bgColor: '#141230', costumes: [StackitLib.spaceBackdrop()], gravity: 0,
-      variables: [{ id: SKOR, name: 'skor', value: 0, monitor: true }]
+      variables: [{ id: SKOR, name: SE.t('skor'), value: 0, monitor: true }]
     });
     st.scripts.push(script(30, 30, [blk('when_start'), blk('set_var', { VAR: SKOR, V: '0' })]));
 
-    var ship = sprite(SHIP, 'Gemi', StackitLib.make('ship'), { y: -140, rotationStyle: 'none' });
+    var ship = sprite(SHIP, SE.t('Gemi'), StackitLib.make('ship'), { y: -140, rotationStyle: 'none' });
     ship.scripts.push(script(30, 30, [
       blk('when_start'),
       blk('show'),
@@ -276,7 +276,7 @@
       blk('play_sfx', { SFX: 'laser' })
     ]));
     ship.scripts.push(script(420, 210, [
-      blk('when_msg', { MSG: 'bitti' }),
+      blk('when_msg', { MSG: SE.t('bitti') }),
       blk('play_sfx', { SFX: 'explosion' }),
       blk('particles', { N: 80, C: '#ff8a3d' }),
       blk('cam_shake', { S: 10, SECS: 0.6 }),
@@ -285,9 +285,9 @@
       blk('wait', { SECS: 1 }),
       blk('stop', { WHAT: 'all' })
     ]));
-    ship.scripts.push(script(420, 540, [blk('when_start'), blk('say_for', { TEXT: '← → hareket, boşluk ateş!', SECS: 2 })]));
+    ship.scripts.push(script(420, 540, [blk('when_start'), blk('say_for', { TEXT: SE.t('← → hareket, boşluk ateş!'), SECS: 2 })]));
 
-    var bullet = sprite(BUL, 'Mermi', StackitLib.make('bullet'), { visible: false, y: -100 });
+    var bullet = sprite(BUL, SE.t('Mermi'), StackitLib.make('bullet'), { visible: false, y: -100 });
     bullet.scripts.push(script(30, 30, [blk('when_start'), blk('hide')]));
     bullet.scripts.push(script(30, 140, [
       blk('when_clone'),
@@ -299,7 +299,7 @@
       blk('delete_clone')
     ]));
 
-    var enemy = sprite(EN, 'Düşman', StackitLib.make('slime'), { visible: false, y: 200 });
+    var enemy = sprite(EN, SE.t('Düşman'), StackitLib.make('slime'), { visible: false, y: 200 });
     enemy.scripts.push(script(30, 30, [
       blk('when_start'),
       blk('hide'),
@@ -322,19 +322,19 @@
         blk('particles', { N: 26, C: '#3ddc68' }),
         blk('change_var', { VAR: SKOR, V: 1 })
       ]),
-      C('if', { COND: blk('touching', { TARGET: SHIP }) }, [blk('broadcast', { MSG: 'bitti' })]),
+      C('if', { COND: blk('touching', { TARGET: SHIP }) }, [blk('broadcast', { MSG: SE.t('bitti') })]),
       blk('delete_clone')
     ]));
 
     return {
-      format: 'stackit-1', name: 'Uzay Atıcı', stage: st,
+      format: 'stackit-1', name: SE.t('Uzay Atıcı'), stage: st,
       sprites: [bullet, enemy, ship],
-      messages: ['bitti']
+      messages: [SE.t('bitti')]
     };
   };
 
   Ex.list = [
-    { id: 'platformer', name: 'Platform Macerası', make: Ex.platformer },
-    { id: 'shooter', name: 'Uzay Atıcı', make: Ex.shooter }
+    { id: 'platformer', name: SE.t('Platform Macerası'), make: Ex.platformer },
+    { id: 'shooter', name: SE.t('Uzay Atıcı'), make: Ex.shooter }
   ];
 })();

@@ -124,7 +124,7 @@ SE.module('vm', function (SE) {
         if (t.gen.next().done) t.done = true;
       } catch (err) {
         t.done = true;
-        console.error('[Stackit] Betik hatası:', err);
+        console.error(SE.t('[Stackit] Betik hatası:'), err);
         this.emit('error', err);
       }
       if (this.halted) break;

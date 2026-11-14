@@ -1,138 +1,145 @@
 <p align="center">
-  <img src="build/icon.png" width="104" alt="Stackit Engine logosu">
+  <img src="build/icon.png" width="104" alt="Stackit Engine logo">
 </p>
 
 <h1 align="center">Stackit Engine</h1>
 
 <p align="center">
-  <b>Scratch tarzı bloklarla gerçek 2D oyunlar yap.</b><br>
-  Fizik, karo haritaları, seviyeler, müzik yapıcı, piksel editörü — Windows, Linux, Android ve tarayıcıda.
+  <b>Make real 2D games with Scratch-style blocks.</b><br>
+  Physics, tile maps, levels, a music maker and a pixel editor — on Windows, Linux, Android and the web.
 </p>
 
 <p align="center">
-  <a href="https://github.com/isnowx17/StackitEngine/releases/latest"><img alt="Sürüm" src="https://img.shields.io/github/v/release/isnowx17/StackitEngine?label=s%C3%BCr%C3%BCm&color=7c5cff"></a>
-  <a href="LICENSE"><img alt="Lisans" src="https://img.shields.io/github/license/isnowx17/StackitEngine?label=lisans&color=1DB39A"></a>
-  <img alt="Platformlar" src="https://img.shields.io/badge/platform-Windows%20%7C%20Linux%20%7C%20Android%20%7C%20Web-4A87F0">
-  <img alt="Bağımlılık yok" src="https://img.shields.io/badge/çalışma%20zamanı-saf%20JS%2C%20bağımlılık%20yok-E9A92B">
+  <a href="https://github.com/isnowx17/StackitEngine/releases/latest"><img alt="Release" src="https://img.shields.io/github/v/release/isnowx17/StackitEngine?color=7c5cff"></a>
+  <a href="LICENSE"><img alt="License" src="https://img.shields.io/github/license/isnowx17/StackitEngine?color=1DB39A"></a>
+  <img alt="Platforms" src="https://img.shields.io/badge/platform-Windows%20%7C%20Linux%20%7C%20Android%20%7C%20Web-4A87F0">
+  <img alt="Languages" src="https://img.shields.io/badge/UI-English%20%7C%20T%C3%BCrk%C3%A7e-E9A92B">
 </p>
 
 <p align="center">
-  <a href="#indir"><b>⬇ İndir</b></a> ·
-  <a href="#ekran">Ekran görüntüleri</a> ·
-  <a href="#ozellikler">Özellikler</a> ·
-  <a href="#derleme">Derleme</a>
+  <b>English</b> · <a href="README.tr.md">Türkçe</a>
 </p>
 
-![Stackit Engine editörü: bloklar solda, oyun sağda çalışıyor](docs/screenshots/editor.png)
+<p align="center">
+  <a href="#download"><b>⬇ Download</b></a> ·
+  <a href="#screenshots">Screenshots</a> ·
+  <a href="#features">Features</a> ·
+  <a href="#build">Build from source</a>
+</p>
 
-Kodu sürükle-bırak bloklarla yazarsın; altında **sabit 60 Hz simülasyon döngüsü**, fizik, kamera, klonlar, parçacıklar ve piksel hassasiyetinde çarpışma algılama olan gerçek bir motor çalışır. Bitirdiğin oyunu **tek bir HTML dosyası** olarak dışa aktarıp her tarayıcıda — telefonda dokunmatik tuşlarla — oynatabilirsin.
+![Stackit Engine editor: blocks on the left, the game running on the right](docs/screenshots/en/editor.png)
 
-<a id="indir"></a>
+You write code by dragging and snapping blocks together; underneath runs a real engine with a **fixed 60 Hz simulation loop**, physics, a camera, clones, particles and pixel-perfect collision detection. When your game is done, export it as **a single HTML file** that runs in any browser — with on-screen touch controls on phones.
 
-## ⬇ İndir
+The interface is available in **English and Turkish** and follows your system language automatically (you can switch it on the *My Projects* screen).
 
-| Platform | Dosya | Not |
+<a id="download"></a>
+
+## ⬇ Download
+
+| Platform | File | Notes |
 |---|---|---|
-| **Windows 10/11** | [Stackit-Engine-1.0.0-windows-portable.exe](https://github.com/isnowx17/StackitEngine/releases/latest/download/Stackit-Engine-1.0.0-windows-portable.exe) | Tek dosya, kurulum gerekmez |
-| Windows 10/11 | [Stackit-Engine-1.0.0-windows-x64.zip](https://github.com/isnowx17/StackitEngine/releases/latest/download/Stackit-Engine-1.0.0-windows-x64.zip) | Klasörü aç, `Stackit Engine.exe` |
-| **Linux** | [Stackit-Engine-1.0.0-linux-x86_64.AppImage](https://github.com/isnowx17/StackitEngine/releases/latest/download/Stackit-Engine-1.0.0-linux-x86_64.AppImage) | `chmod +x` yap, çalıştır |
+| **Windows 10/11** | [Stackit-Engine-1.0.0-windows-portable.exe](https://github.com/isnowx17/StackitEngine/releases/latest/download/Stackit-Engine-1.0.0-windows-portable.exe) | Single file, no installation |
+| Windows 10/11 | [Stackit-Engine-1.0.0-windows-x64.zip](https://github.com/isnowx17/StackitEngine/releases/latest/download/Stackit-Engine-1.0.0-windows-x64.zip) | Extract and run `Stackit Engine.exe` |
+| **Linux** | [Stackit-Engine-1.0.0-linux-x86_64.AppImage](https://github.com/isnowx17/StackitEngine/releases/latest/download/Stackit-Engine-1.0.0-linux-x86_64.AppImage) | `chmod +x` and run |
 | Debian / Ubuntu | [Stackit-Engine-1.0.0-linux-amd64.deb](https://github.com/isnowx17/StackitEngine/releases/latest/download/Stackit-Engine-1.0.0-linux-amd64.deb) | `sudo apt install ./Stackit-Engine-1.0.0-linux-amd64.deb` |
-| **Android 7+** | [Stackit-Engine-1.0.0-android.apk](https://github.com/isnowx17/StackitEngine/releases/latest/download/Stackit-Engine-1.0.0-android.apk) | Tablet önerilir; yatay ekran |
-| **Tarayıcı** | Bu repoyu indir, `index.html`'i aç | Kurulum yok, çevrimdışı çalışır |
+| **Android 7+** | [Stackit-Engine-1.0.0-android.apk](https://github.com/isnowx17/StackitEngine/releases/latest/download/Stackit-Engine-1.0.0-android.apk) | Tablets recommended; landscape |
+| **Browser** | Clone or download this repo and open `index.html` | Nothing to install, works offline |
 
-> **İlk açılışta uyarı çıkabilir:** Windows dosyaları imzasız olduğu için SmartScreen "Windows bilgisayarınızı korudu" diyebilir → **Ek bilgi → Yine de çalıştır**. Android'de APK'yı kurmak için tarayıcına/dosya yöneticine "bilinmeyen uygulamaları yükleme" izni ver. Bazı Linux dağıtımlarında AppImage için `libfuse2` gerekir.
+> **You may see a warning on first launch:** the Windows files are not code-signed, so SmartScreen may say "Windows protected your PC" → click **More info → Run anyway**. On Android, allow your browser / file manager to "install unknown apps". Some Linux distributions need `libfuse2` for AppImages.
 
-<a id="ekran"></a>
+<a id="screenshots"></a>
 
-## 📸 Ekran görüntüleri
+## 📸 Screenshots
 
-| Projelerim | Karo haritası ve seviyeler |
+| My Projects | Tile maps & levels |
 |---|---|
-| ![Projelerim ekranı: yeni proje, devam et ve proje kartları](docs/screenshots/projelerim.png) | ![Harita editörü: karo paleti, seviyeler, boyanmış bölüm](docs/screenshots/harita.png) |
-| **Müzik yapıcı (notalar + davul)** | **Piksel kostüm editörü** |
-| ![Adım tabanlı müzik yapıcı çalarken](docs/screenshots/muzik.png) | ![Robo karakterinin piksel editöründe açık hali](docs/screenshots/kostum.png) |
-| **Android tablette** | **Uzay Atıcı örneği** |
-| ![Android tablette editör ve çalışan oyun](docs/screenshots/android.png) | ![Uzay Atıcı oyunundan bir an](docs/screenshots/oyun-uzay.png) |
+| ![My Projects: create a new project, continue, project cards](docs/screenshots/en/projects.png) | ![Map editor: tile palette, levels and a painted stage](docs/screenshots/en/map.png) |
+| **Music maker (notes + drums)** | **Pixel costume editor** |
+| ![Step-based music maker while playing](docs/screenshots/en/music.png) | ![The Robo sprite open in the pixel editor](docs/screenshots/en/costumes.png) |
+| **On an Android tablet** | **Space Shooter example** |
+| ![The editor and a running game on an Android tablet](docs/screenshots/en/android.png) | ![A moment from the Space Shooter game](docs/screenshots/en/game.png) |
 
-<a id="ozellikler"></a>
+<a id="features"></a>
 
-## ✨ Neler var?
+## ✨ Features
 
 | | |
 |---|---|
-| **Blok editörü** | 14 kategori, ~150 blok. Yapboz çentikli bloklar, C blokları (eğer/değilse, döngüler), değer ve mantık yuvaları, açılır menüler. Yakınlaştırma, kaydırma, geri al/yinele, sağ tık menüsü (çoğalt/sil/düzenle). |
-| **Motor** | Sabit adımlı 60 Hz döngü, generator tabanlı çoklu iş parçacığı (yüzlerce betik aynı anda), kamera (takip, eksen kilidi, yakınlaştırma, sarsıntı), klonlar (300'e kadar), parçacık sistemi, kalem katmanı, konuşma balonları, değişken göstergeleri. |
-| **Fizik** | Dinamik gövdeler (yerçekimi, sürtünme, sekme), katı gövdeler (zemin/duvar), *yerde mi? / duvara çarptı mı? / tavana çarptı mı?* algılayıcıları, kinematik hız. **Hareketli platformlar üstündeki karakteri taşır**; istenirse dinamik karakterler birbirine çarpar ve üst üste durur. |
-| **Karo haritası** | Seviyeleri ızgaraya boyayarak çiz: kalem, silgi, dikdörtgen, kova, damlalık, kaydırma, geri al. Karo türleri: *katı*, *tek yönlü* (altından geçilir, üstüne basılır), *geçilebilir* (altın, diken, lav, su…). 11 hazır karo; kendin de çizebilirsin. |
-| **Seviyeler** | Her seviyenin kendi haritası, arka planı, dekoru ve karakter başlangıç konumları. `seviye başlayınca`, `sonraki seviyeye geç` blokları; skor gibi değişkenler seviyeler arasında korunur. |
-| **Müzik & ses** | Ses dosyası yükle (mp3/wav/ogg) ya da **adım tabanlı müzik yapıcıda** notalar + davul/trampet/zil ile kendi müziğini yap. Dosya gerektirmeyen ses efektleri (zıplama, altın, patlama, lazer…) ve nota çalma. |
-| **Çarpışma** | Saydam pikseller kırpılmış sınır kutuları + piksel hassasiyetinde dokunma testi; *X ile çarpışınca* olay bloğu. |
-| **Kostüm editörü** | Piksel çizim: kalem, silgi, kova, damlalık, çizgi, dikdörtgen, ayna çizim, çevirme, geri al. Resim yükleme ve hazır piksel-art kütüphanesi. |
-| **Fonksiyonlar** | Parametreli kendi blokların; "ekranı yenilemeden çalıştır" (warp) seçeneği. |
-| **Projelerim** | Açılışta proje ekranı: *Yeni proje oluştur* (boş ya da örnekten), *Devam et*, önizlemeli proje kartları, arama, sıralama; yeniden adlandır / çoğalt / indir / sil. Projeler IndexedDB'de otomatik kaydedilir. |
-| **Dışa aktarma** | `.stackit` proje dosyası indir / içe aktar. **Tek dosya HTML oyun**: her tarayıcıda açılır, telefonda otomatik dokunmatik yön tuşları + A tuşu. |
+| **Block editor** | 14 categories, ~150 blocks. Snap-together puzzle blocks, C blocks (if/else, loops), value and boolean slots, drop-down menus. Zoom, pan, undo/redo, right-click menu (duplicate / delete / edit). |
+| **Engine** | Fixed-step 60 Hz loop, generator-based multithreading (hundreds of scripts at once), camera (follow, axis lock, zoom, shake), clones (up to 300), particle system, pen layer, speech bubbles, variable monitors. |
+| **Physics** | Dynamic bodies (gravity, friction, bounce), solid bodies (ground / walls), *on ground? / hit a wall? / hit the ceiling?* sensors, kinematic velocity. **Moving platforms carry the sprites standing on them**; optionally, dynamic sprites collide with each other and can stand on top of one another. |
+| **Tile maps** | Paint levels on a grid: pen, eraser, rectangle, bucket, picker, pan, undo. Tile types: *solid*, *one-way* (jump through from below, stand on top), *pass-through* (coins, spikes, lava, water…). 11 built-in tiles, or draw your own. |
+| **Levels** | Each level has its own map, background, backdrop and sprite start positions. `when level starts` and `go to next level` blocks; variables such as the score are kept between levels. |
+| **Music & sound** | Upload sound files (mp3 / wav / ogg) or make your own tunes with the **step-based music maker**: notes plus kick / snare / hi-hat. Built-in sound effects (jump, coin, explosion, laser…) and note playback — no files needed. |
+| **Collision** | Bounding boxes trimmed to the visible pixels plus pixel-perfect touch tests; a *when colliding with X* event block. |
+| **Costume editor** | Pixel drawing: pen, eraser, bucket, picker, line, rectangle, mirror drawing, flipping, undo. Image upload and a built-in pixel-art library. |
+| **Functions** | Your own blocks with parameters; optional "run without screen refresh" (warp). |
+| **My Projects** | A start screen with *Create new project* (blank or from an example), *Continue*, project cards with previews, search and sorting; rename / duplicate / download / delete. Projects are saved automatically to IndexedDB. |
+| **Export** | Download / import `.stackit` project files. **Single-file HTML games** that open in any browser and show touch controls on phones. |
+| **Two languages** | English and Turkish UI, block texts, examples and exported games — picked from the system language. |
 
-## 🎮 Örnek projeler
+## 🎮 Example projects
 
-- **Platform Macerası** — karo haritalı 2 seviye (Çayır → Kale), hareketli asansör, soru kutusu, diken ve lav, altın toplama, düşmanın üstüne zıplama, arka plan müziği.
-- **Uzay Atıcı** — klonlarla mermiler ve düşmanlar, tuş olayları, parçacık patlamaları.
+- **Platform Adventure** — two tile-map levels (Meadow → Castle), a moving lift, a question box, spikes and lava, coin collecting, stomping on the enemy, background music.
+- **Space Shooter** — clone-powered bullets and enemies, key events, particle explosions.
 
-Projelerim ekranındaki **Örnekten başla** bölümünden açılır.
+Open them from the **Start from an example** section on the *My Projects* screen.
 
-## 🧠 Nasıl çalışır?
+## 🧠 How it works
 
-- **Projeler:** motoru açınca *Projelerim* ekranı gelir. Editördeyken adres `#/p/<id>` olur; sayfayı yenilersen proje açık kalır, geri tuşu Projelerim'e döner. Projeyi başka bir bilgisayara taşımak ya da yedeklemek için **İndir** ile `.stackit` dosyası al.
-- **Düzenleme modu / Oyun modu:** ▶ ile oyun sahnenin bir kopyası üzerinde çalışır; ■ ile sahne kurduğun başlangıç haline döner (gerçek oyun motorlarındaki gibi). Düzenleme modunda karakterleri sahnede sürükleyerek yerleştir, tekerlekle yakınlaştır, boş yeri sürükleyerek kaydır.
-- **Koordinatlar:** merkez (0,0), x sağa, y yukarı. Yön: 90 = sağ, 0 = yukarı.
-- **Seviyeler:** ▶, o an düzenlediğin seviyeden başlar; dışa aktarılan oyun hep 1. seviyeden başlar. Karakteri sahnede sürüklemek konumunu yalnızca düzenlenen seviye için değiştirir.
-- **Karo koordinatları:** karo boyutu 32 ise (0,0) karosu x 0–32, y 0–32 arasını kaplar.
-- **Fizik birimleri** kare başınadır: `x hızı 4` = saniyede 240 piksel; `yerçekimi 0.8` = her kare hız 0.8 azalır.
-- **Bir betiğe tıkla** → yalnızca o betik çalışır (parlar). Bir değer bloğuna tıkla → değeri baloncukta görünür. Bloğu **palete geri sürükle** → silinir.
+- **Projects:** the *My Projects* screen opens first. In the editor the address becomes `#/p/<id>`, so refreshing keeps the project open and the browser's back button returns to *My Projects*. To move a project to another computer or back it up, use **Download** to get a `.stackit` file.
+- **Edit mode / play mode:** ▶ runs the game on a copy of the stage; ■ restores the stage to how you set it up (like a real game engine). In edit mode, drag sprites on the stage to place them, zoom with the wheel and drag empty space to pan.
+- **Coordinates:** the centre is (0,0), x grows to the right, y grows upwards. Direction: 90 = right, 0 = up.
+- **Levels:** ▶ starts from the level you are editing; exported games always start from level 1. Dragging a sprite on the stage changes its position only for the level being edited.
+- **Physics units** are per frame: `x velocity 4` = 240 pixels per second; `gravity 0.8` = velocity drops by 0.8 every frame.
+- **Click a script** to run just that script (it glows). Click a value block to see its value in a bubble. Drag a block back onto the palette to delete it.
 
-### Kısayollar
+### Shortcuts
 
-| Kısayol | İş |
+| Shortcut | Action |
 |---|---|
-| `Ctrl+Enter` | Oyna / durdur |
-| `Ctrl+Z`, `Ctrl+Shift+Z` / `Ctrl+Y` | Geri al / yinele |
-| `Ctrl+S` | Kaydet |
-| `Ctrl+tekerlek` | Çalışma alanını yakınlaştır |
-| `B E G I L R` | Kostüm editörü araçları |
-| `B E R G I H`, `boşluk + sürükle` | Harita editörü araçları / kaydırma |
+| `Ctrl+Enter` | Play / stop |
+| `Ctrl+Z`, `Ctrl+Shift+Z` / `Ctrl+Y` | Undo / redo |
+| `Ctrl+S` | Save |
+| `Ctrl+wheel` | Zoom the workspace |
+| `B E G I L R` | Costume editor tools |
+| `B E R G I H`, `space + drag` | Map editor tools / pan |
 
-<a id="derleme"></a>
+<a id="build"></a>
 
-## 🛠 Kaynaktan çalıştırma ve derleme
+## 🛠 Run and build from source
 
-Editör derleme adımı istemez — saf HTML/CSS/JS:
+The editor needs no build step — it is plain HTML / CSS / JS:
 
 ```bash
 git clone https://github.com/isnowx17/StackitEngine.git
 cd StackitEngine
-npm start                # → http://localhost:8080  (ya da index.html'i doğrudan aç)
+npm start                # → http://localhost:8080  (or just open index.html)
 ```
 
-Masaüstü ve Android paketleri için:
+Desktop and Android packages:
 
 ```bash
 npm install
-npm run desktop          # Electron'da geliştirme modunda aç
+npm run desktop          # open in Electron (development mode)
 npm run dist:linux       # AppImage + .deb
-npm run dist:win         # taşınabilir .exe + .zip (Linux'ta da wine gerekmez)
-npm run dist:win-setup   # klasik kurulum sihirbazı (NSIS) — Linux'ta wine gerekir
-npm run android:apk      # web → Capacitor senkron → imzalı APK (+ Google Play için AAB)
+npm run dist:win         # portable .exe + .zip (no wine needed, even on Linux)
+npm run dist:win-setup   # classic NSIS installer — needs wine on Linux
+npm run android:apk      # web → Capacitor sync → signed APK (+ AAB for Google Play)
+npm run i18n:check       # report UI texts that are missing an English translation
 ```
 
-Çıktılar `release/` (masaüstü) ve `android/app/build/outputs/` (Android) klasörlerine düşer.
+Outputs go to `release/` (desktop) and `android/app/build/outputs/` (Android).
 
-**Android** için JDK 21 ve Android SDK gerekir:
+**Android** builds need JDK 21 and the Android SDK:
 
 ```bash
-export JAVA_HOME=/yol/jdk-21
+export JAVA_HOME=/path/to/jdk-21
 export ANDROID_HOME=~/Android/Sdk
 ```
 
-Sürüm imzası için `android/keystore.properties` dosyası oluştur (git'e girmez):
+For release signing, create `android/keystore.properties` (it is git-ignored):
 
 ```properties
 storeFile=stackit-release.jks
@@ -141,39 +148,45 @@ keyAlias=stackit
 keyPassword=…
 ```
 
-Bu dosya yoksa Gradle imzasız bir sürüm APK'sı üretir; `./gradlew assembleDebug` ile hata ayıklama APK'sı da alabilirsin.
+Without it Gradle produces an unsigned release APK; `./gradlew assembleDebug` gives you a debug APK.
 
-### Android'e özel davranışlar ([`js/platform/android.js`](js/platform/android.js))
+### Android-specific behaviour ([`js/platform/android.js`](js/platform/android.js))
 
-- **Geri tuşu:** açık pencereyi kapatır → oyunu durdurur → Projelerim'e döner → uygulamadan çıkar.
-- **İndir / Oyunu dışa aktar:** Android WebView dosya indiremediği için dosya hazırlanır ve paylaşım menüsü açılır (Dosyalar'a kaydet, Drive, Quick Share…).
-- Uygulama arka plana geçince oyun duraklar ve bekleyen kayıt hemen yazılır.
-- Ekran yatay kilitlidir; telefonlarda editör 1180 px genişlikte çizilip ekrana sığdırılır.
+- **Back button:** closes the open dialog → stops the game → returns to *My Projects* → exits the app.
+- **Download / Export Game:** the Android WebView cannot download files, so the file is prepared and the share sheet opens (save to Files, Drive, Quick Share…).
+- When the app goes to the background, the game pauses and any pending save is written immediately.
+- The screen is locked to landscape; on phones the editor is laid out at 1180 px wide and scaled to fit.
 
-## 📁 Klasör yapısı
+### Translations
+
+Turkish is the source language: UI texts are written in Turkish and looked up with `SE.t('…')`. English lives in [`js/runtime/i18n.js`](js/runtime/i18n.js) (runtime strings that exported games also need) and [`js/editor/lang-en.js`](js/editor/lang-en.js) (the editor). `npm run i18n:check` lists any text that has no English translation yet.
+
+## 📁 Project structure
 
 ```
-index.html, css/          editör arayüzü (Nunito yazı tipi gömülü)
-js/runtime/               motor — dışa aktarılan oyunlara da gömülür
-  core.js                   yardımcılar, modül sistemi
-  audio.js                  ses: efekt sentezi, dosyalar, adım tabanlı müzik
-  engine.js                 aktörler, fizik, karo haritası, seviyeler, kamera, çizim, girdi
-  vm.js                     betik yorumlayıcısı (thread'ler)
-  blocks.js                 tüm blok tanımları ve davranışları
-  player.js                 bağımsız oynatıcı + dokunmatik tuşlar
-js/editor/                editör
-  blockview.js, workspace.js, palette.js     bloklar, sürükle-bırak, palet
-  costumes.js, mapeditor.js, sounds.js       piksel, harita ve ses editörleri
-  library.js, examples.js                    hazır piksel-art, karolar, melodiler, örnekler
-  store.js, home.js, app.js                  proje deposu, Projelerim ekranı, uygulama
-js/platform/android.js    Android (Capacitor) uyarlamaları
-electron/                 masaüstü (Electron) ana süreci
-android/                  Capacitor Android projesi
-scripts/build-web.js      web dosyalarını Capacitor için paketler
+index.html, css/          editor UI (Nunito font bundled)
+js/runtime/               engine — also embedded into exported games
+  core.js                   helpers, module system
+  i18n.js                   language selection + runtime translations
+  audio.js                  sound: effect synthesis, files, step sequencer
+  engine.js                 actors, physics, tile maps, levels, camera, rendering, input
+  vm.js                     script interpreter (threads)
+  blocks.js                 all block definitions and behaviour
+  player.js                 standalone player + touch controls
+js/editor/                editor
+  blockview.js, workspace.js, palette.js     blocks, drag & drop, palette
+  costumes.js, mapeditor.js, sounds.js       pixel, map and sound editors
+  library.js, examples.js                    built-in pixel art, tiles, melodies, examples
+  store.js, home.js, app.js                  project storage, My Projects screen, app
+  lang-en.js                                 English translations of the editor
+js/platform/android.js    Android (Capacitor) adaptations
+electron/                 desktop (Electron) main process
+android/                  Capacitor Android project
+scripts/                  web packaging for Capacitor, translation check
 ```
 
-**Yeni blok eklemek** için `js/runtime/blocks.js` içinde `def('benim_blogum', { cat, shape, text, args, run })` yazman yeterli; palet ve editör otomatik tanır.
+**To add a new block**, write `def('my_block', { cat, shape, text, args, run })` in `js/runtime/blocks.js` (and its English text in `js/editor/lang-en.js`); the palette and editor pick it up automatically.
 
-## 📄 Lisans
+## 📄 License
 
-[MIT](LICENSE). Gömülü Nunito yazı tipi [SIL Open Font License](css/fonts/OFL-Nunito.txt) ile dağıtılır.
+[MIT](LICENSE). The bundled Nunito font is distributed under the [SIL Open Font License](css/fonts/OFL-Nunito.txt).

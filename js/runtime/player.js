@@ -49,7 +49,7 @@ SE.module('player', function (SE) {
     make(pad, 'left', s + 'left:0;top:32%', svg('M15 6l-6 6 6 6'));
     make(pad, 'right', s + 'right:0;top:32%', svg('M9 6l6 6-6 6'));
     var a = make(wrap, 'space', 'right:5%;bottom:9%;width:15%;aspect-ratio:1;font:900 clamp(12px,4vw,28px) system-ui,sans-serif;color:#fff', 'A');
-    a.title = 'boşluk';
+    a.title = SE.t('boşluk');
     host.appendChild(wrap);
     return {
       el: wrap,
@@ -76,10 +76,10 @@ SE.module('player', function (SE) {
     if (mode === 'on' || (mode === 'auto' && SE.isTouchDevice())) SE.touchControls(host, engine);
 
     var overlay = document.createElement('button');
-    overlay.setAttribute('aria-label', 'Oyunu başlat');
+    overlay.setAttribute('aria-label', SE.t('Oyunu başlat'));
     overlay.style.cssText = 'position:absolute;inset:0;border:0;background:rgba(10,12,24,.45);cursor:pointer;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:10px;color:#fff;font:800 20px system-ui,sans-serif;z-index:6';
     overlay.innerHTML = '<span style="width:84px;height:84px;border-radius:50%;background:#7c5cff;display:flex;align-items:center;justify-content:center;box-shadow:0 8px 30px rgba(0,0,0,.4)"><svg width="34" height="34" viewBox="0 0 24 24"><path d="M7 4l13 8-13 8z" fill="#fff"/></svg></span><span></span>';
-    overlay.lastChild.textContent = project.name || 'Oyna';
+    overlay.lastChild.textContent = project.name || SE.t('Oyna');
     host.appendChild(overlay);
 
     var bar = document.createElement('div');
@@ -93,8 +93,8 @@ SE.module('player', function (SE) {
       bar.appendChild(b);
       return b;
     }
-    btn('M4 4v6h6M4.6 15a8 8 0 1 0 1.8-8.4L4 10', 'Yeniden başlat', function () { engine.start(); overlay.style.display = 'none'; });
-    btn('M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5', 'Tam ekran', function () {
+    btn('M4 4v6h6M4.6 15a8 8 0 1 0 1.8-8.4L4 10', SE.t('Yeniden başlat'), function () { engine.start(); overlay.style.display = 'none'; });
+    btn('M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5', SE.t('Tam ekran'), function () {
       if (document.fullscreenElement) document.exitFullscreen();
       else if (host.requestFullscreen) host.requestFullscreen();
     });

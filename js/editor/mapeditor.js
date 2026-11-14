@@ -2,14 +2,14 @@
 (function () {
   var U = SE.util;
   var TOOLS = [
-    ['paint', 'M4 20l4-1L19 8l-3-3L5 16zM14 7l3 3', 'Boya (B)'],
-    ['erase', 'M3 15l8-8 7 7-5 5H7zM11 20h10M7 11l7 7', 'Sil (E) — sağ tık da siler'],
-    ['rect', 'M4 6h16v12H4zM4 6l16 12', 'Dikdörtgen doldur (R)'],
-    ['fill', 'M4 12l7-7 7 7-7 7zM4 12h14M20 15.5c.8 1.2 1.3 2 1.3 2.7a1.3 1.3 0 0 1-2.6 0c0-.7.5-1.5 1.3-2.7', 'Boşluğu doldur (G)'],
-    ['picker', 'M14 4l6 6M17.5 6.5L8 16l-4 1 1-4 9.5-9.5', 'Karo seç (I)'],
-    ['pan', 'M8 13V5.5a1.5 1.5 0 0 1 3 0V12M11 11.5V4a1.5 1.5 0 0 1 3 0v8M14 11.5V5.5a1.5 1.5 0 0 1 3 0V13M17 9.5a1.5 1.5 0 0 1 3 0V15a6 6 0 0 1-6 6h-1.5a6 6 0 0 1-4.6-2.2L4.5 15a1.6 1.6 0 0 1 2.4-2.1L8 14', 'Kaydır (H) — orta tık / boşluk tuşu da kaydırır']
+    ['paint', 'M4 20l4-1L19 8l-3-3L5 16zM14 7l3 3', SE.t('Boya (B)')],
+    ['erase', 'M3 15l8-8 7 7-5 5H7zM11 20h10M7 11l7 7', SE.t('Sil (E) — sağ tık da siler')],
+    ['rect', 'M4 6h16v12H4zM4 6l16 12', SE.t('Dikdörtgen doldur (R)')],
+    ['fill', 'M4 12l7-7 7 7-7 7zM4 12h14M20 15.5c.8 1.2 1.3 2 1.3 2.7a1.3 1.3 0 0 1-2.6 0c0-.7.5-1.5 1.3-2.7', SE.t('Boşluğu doldur (G)')],
+    ['picker', 'M14 4l6 6M17.5 6.5L8 16l-4 1 1-4 9.5-9.5', SE.t('Karo seç (I)')],
+    ['pan', 'M8 13V5.5a1.5 1.5 0 0 1 3 0V12M11 11.5V4a1.5 1.5 0 0 1 3 0v8M14 11.5V5.5a1.5 1.5 0 0 1 3 0V13M17 9.5a1.5 1.5 0 0 1 3 0V15a6 6 0 0 1-6 6h-1.5a6 6 0 0 1-4.6-2.2L4.5 15a1.6 1.6 0 0 1 2.4-2.1L8 14', SE.t('Kaydır (H) — orta tık / boşluk tuşu da kaydırır')]
   ];
-  var KINDS = [['katı', 'solid'], ['tek yönlü (üstüne basılır)', 'oneway'], ['geçilebilir (dekor / toplanır)', 'none']];
+  var KINDS = [[SE.t('katı'), 'solid'], [SE.t('tek yönlü (üstüne basılır)'), 'oneway'], [SE.t('geçilebilir (dekor / toplanır)'), 'none']];
   function icon(path) {
     return '<svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="' + path + '"/></svg>';
   }
@@ -38,11 +38,11 @@
     var self = this, r = this.root;
     r.innerHTML = '';
     var side = UI.el('div', 'map-side');
-    side.appendChild(UI.el('div', 'map-side-head', 'Karolar'));
+    side.appendChild(UI.el('div', 'map-side-head', SE.t('Karolar')));
     this.tileGrid = UI.el('div', 'tile-grid');
     side.appendChild(this.tileGrid);
     var btns = UI.el('div', 'cos-add');
-    [['+ Yeni', 'new'], ['Hazır', 'lib'], ['Yükle', 'upload']].forEach(function (b) {
+    [[SE.t('+ Yeni'), 'new'], [SE.t('Hazır'), 'lib'], [SE.t('Yükle'), 'upload']].forEach(function (b) {
       var x = UI.el('button', 'btn small', b[0]);
       x.type = 'button';
       x.addEventListener('click', function (e) { self.addTile(b[1], e); });
@@ -70,13 +70,13 @@
     tb.appendChild(UI.el('span', 'tsep'));
     var undo = UI.el('button', 'tool');
     undo.type = 'button';
-    undo.title = 'Geri al (Ctrl+Z)';
+    undo.title = SE.t('Geri al (Ctrl+Z)');
     undo.innerHTML = icon('M9 14L4 9l5-5M4 9h10a6 6 0 0 1 0 12h-3');
     undo.addEventListener('click', function () { self.undo(); });
     tb.appendChild(undo);
     this.gridBtn = UI.el('button', 'tool on');
     this.gridBtn.type = 'button';
-    this.gridBtn.title = 'Izgara';
+    this.gridBtn.title = SE.t('Izgara');
     this.gridBtn.innerHTML = icon('M4 4h16v16H4zM4 9.3h16M4 14.6h16M9.3 4v16M14.6 4v16');
     this.gridBtn.addEventListener('click', function () {
       self.grid = !self.grid;
@@ -86,15 +86,15 @@
     tb.appendChild(this.gridBtn);
     var center = UI.el('button', 'tool');
     center.type = 'button';
-    center.title = 'Başlangıç kamerasına git';
+    center.title = SE.t('Başlangıç kamerasına git');
     center.innerHTML = icon('M12 3v4M12 17v4M3 12h4M17 12h4M12 8a4 4 0 1 0 0 8a4 4 0 1 0 0-8');
     center.addEventListener('click', function () { self.resetView(); });
     tb.appendChild(center);
     tb.appendChild(UI.el('span', 'tsep'));
-    tb.appendChild(UI.el('span', 'flabel', 'Karo'));
+    tb.appendChild(UI.el('span', 'flabel', SE.t('Karo')));
     this.sizeSel = document.createElement('select');
     this.sizeSel.className = 'field';
-    this.sizeSel.title = 'Bir karonun dünyadaki boyutu (piksel)';
+    this.sizeSel.title = SE.t('Bir karonun dünyadaki boyutu (piksel)');
     [16, 24, 32, 40, 48, 64].forEach(function (n) {
       var o = document.createElement('option');
       o.value = n;
@@ -108,11 +108,11 @@
     });
     tb.appendChild(this.sizeSel);
     tb.appendChild(UI.el('span', 'tsep'));
-    tb.appendChild(UI.el('span', 'flabel', 'Arka plan'));
+    tb.appendChild(UI.el('span', 'flabel', SE.t('Arka plan')));
     this.bgInp = document.createElement('input');
     this.bgInp.type = 'color';
     this.bgInp.className = 'field color';
-    this.bgInp.title = 'Bu seviyenin arka plan rengi';
+    this.bgInp.title = SE.t('Bu seviyenin arka plan rengi');
     this.bgInp.addEventListener('input', function () {
       self.level().bgColor = self.bgInp.value;
       self.app.mapChanged(true);
@@ -121,7 +121,7 @@
     tb.appendChild(this.bgInp);
     this.bdSel = document.createElement('select');
     this.bdSel.className = 'field';
-    this.bdSel.title = 'Bu seviyenin dekoru';
+    this.bdSel.title = SE.t('Bu seviyenin dekoru');
     this.bdSel.addEventListener('change', function () {
       self.level().backdrop = self.bdSel.value;
       self.app.mapChanged(true);
@@ -136,7 +136,7 @@
     this.cv.className = 'map-canvas';
     this.wrap.appendChild(this.cv);
     main.appendChild(this.wrap);
-    main.appendChild(UI.el('div', 'map-hint', 'Sol tık: boya · Sağ tık: sil · Tekerlek: yakınlaştır · Orta tık ya da boşluk + sürükle: kaydır · Kesikli çerçeve: oyunun başladığı kamera'));
+    main.appendChild(UI.el('div', 'map-hint', SE.t('Sol tık: boya · Sağ tık: sil · Tekerlek: yakınlaştır · Orta tık ya da boşluk + sürükle: kaydır · Kesikli çerçeve: oyunun başladığı kamera')));
     r.appendChild(main);
 
     this.bindCanvas();
@@ -178,12 +178,12 @@
     this.bdSel.innerHTML = '';
     var o0 = document.createElement('option');
     o0.value = '';
-    o0.textContent = 'Dekor: sahnedeki';
+    o0.textContent = SE.t('Dekor: sahnedeki');
     this.bdSel.appendChild(o0);
     (st.costumes || []).forEach(function (c) {
       var o = document.createElement('option');
       o.value = c.name;
-      o.textContent = 'Dekor: ' + c.name;
+      o.textContent = SE.t('Dekor: {name}', { name: c.name });
       this.bdSel.appendChild(o);
     }, this);
     this.bdSel.value = lv.backdrop || '';
@@ -197,7 +197,7 @@
       var b = UI.el('button', 'tile-btn' + (String(t.id) === String(self.sel) ? ' on' : ''));
       b.type = 'button';
       var kd = KINDS.filter(function (k) { return k[1] === (t.solid || 'solid'); })[0] || KINDS[0];
-      b.title = t.name + ' (' + kd[0] + ') — çift tıkla: çiz';
+      b.title = SE.t('{name} ({kind}) — çift tıkla: çiz', { name: t.name, kind: kd[0] });
       var img = document.createElement('img');
       img.src = t.src;
       img.alt = t.name;
@@ -218,7 +218,7 @@
     var self = this, t = this.tileById(this.sel), p = this.props;
     p.innerHTML = '';
     if (!t) {
-      p.appendChild(UI.el('div', 'pal-note', 'Karo yok. "+ Yeni" ya da "Hazır" ile ekle.'));
+      p.appendChild(UI.el('div', 'pal-note', SE.t('Karo yok. "+ Yeni" ya da "Hazır" ile ekle.')));
       return;
     }
     var name = document.createElement('input');
@@ -233,7 +233,7 @@
       self.app.changed('vars');
     });
     var lab = UI.el('label', 'insp-f');
-    lab.appendChild(UI.el('span', 'flabel', 'Ad'));
+    lab.appendChild(UI.el('span', 'flabel', SE.t('Ad')));
     lab.appendChild(name);
     p.appendChild(lab);
     var kind = document.createElement('select');
@@ -251,14 +251,14 @@
       self.app.mapChanged(true);
     });
     var lab2 = UI.el('label', 'insp-f');
-    lab2.appendChild(UI.el('span', 'flabel', 'Tür'));
+    lab2.appendChild(UI.el('span', 'flabel', SE.t('Tür')));
     lab2.appendChild(kind);
     p.appendChild(lab2);
     var row = UI.el('div', 'cos-add');
-    var ed = UI.el('button', 'btn small', 'Çiz / düzenle');
+    var ed = UI.el('button', 'btn small', SE.t('Çiz / düzenle'));
     ed.type = 'button';
     ed.addEventListener('click', function () { self.app.editTiles(self.tileset().costumes.indexOf(t)); });
-    var del = UI.el('button', 'btn small', 'Sil');
+    var del = UI.el('button', 'btn small', SE.t('Sil'));
     del.type = 'button';
     del.addEventListener('click', function () { self.app.deleteTile(t.id); });
     row.appendChild(ed);
@@ -269,7 +269,7 @@
   P.renderLevels = function () {
     var self = this, app = this.app, lvs = app.project.levels;
     this.levelBar.innerHTML = '';
-    this.levelBar.appendChild(UI.el('span', 'flabel', 'Seviyeler'));
+    this.levelBar.appendChild(UI.el('span', 'flabel', SE.t('Seviyeler')));
     lvs.forEach(function (lv, i) {
       var b = UI.el('button', 'lvl-chip' + (i === app.editLevel ? ' on' : ''));
       b.type = 'button';
@@ -279,9 +279,9 @@
       b.addEventListener('dblclick', function () { app.renameLevel(i); });
       b.addEventListener('contextmenu', function (e) {
         e.preventDefault();
-        var items = [{ label: 'Yeniden adlandır', value: 'ren' }, { label: 'Çoğalt', value: 'dup' }];
-        if (i > 0) items.push({ label: 'Sola taşı', value: 'left' });
-        if (lvs.length > 1) items.push({ label: 'Sil', value: 'del', danger: true });
+        var items = [{ label: SE.t('Yeniden adlandır'), value: 'ren' }, { label: SE.t('Çoğalt'), value: 'dup' }];
+        if (i > 0) items.push({ label: SE.t('Sola taşı'), value: 'left' });
+        if (lvs.length > 1) items.push({ label: SE.t('Sil'), value: 'del', danger: true });
         UI.menu(e.clientX, e.clientY, items, function (v) {
           if (v === 'ren') app.renameLevel(i);
           else if (v === 'dup') app.addLevel(i);
@@ -291,7 +291,7 @@
       });
       self.levelBar.appendChild(b);
     });
-    var add = UI.el('button', 'lvl-chip add', '+ Seviye');
+    var add = UI.el('button', 'lvl-chip add', SE.t('+ Seviye'));
     add.type = 'button';
     add.addEventListener('click', function () { app.addLevel(); });
     this.levelBar.appendChild(add);
@@ -324,7 +324,7 @@
       return c;
     };
     if (kind === 'new') {
-      push(StackitLib.blank(16, 16, 'karo'));
+      push(StackitLib.blank(16, 16, SE.t('karo')));
       this.app.editTiles(ts.costumes.length - 1);
     } else if (kind === 'lib') {
       var r = ev.target.getBoundingClientRect();
@@ -345,7 +345,7 @@
             var g = cv.getContext('2d');
             var s = Math.min(img.naturalWidth, img.naturalHeight);
             g.drawImage(img, (img.naturalWidth - s) / 2, (img.naturalHeight - s) / 2, s, s, 0, 0, n, n);
-            push({ name: file.name.replace(/\.[^.]+$/, '').slice(0, 20) || 'karo', src: cv.toDataURL('image/png'), w: n, h: n, scale: 1 });
+            push({ name: file.name.replace(/\.[^.]+$/, '').slice(0, 20) || SE.t('karo'), src: cv.toDataURL('image/png'), w: n, h: n, scale: 1 });
           };
           img.src = rd.result;
         };
@@ -543,7 +543,7 @@
         return;
       }
       if (!erase && !self.tileById(self.sel)) {
-        UI.toast('Önce soldan bir karo seç', 'err');
+        UI.toast(SE.t('Önce soldan bir karo seç'), 'err');
         return;
       }
       self.snapshot();
@@ -566,7 +566,7 @@
         return;
       }
       var w = self.toWorld(e), c = self.cellOf(w);
-      self.coord.textContent = 'x: ' + Math.round(w.x) + '  y: ' + Math.round(w.y) + '  (karo ' + c.x + ', ' + c.y + ')';
+      self.coord.textContent = 'x: ' + Math.round(w.x) + '  y: ' + Math.round(w.y) + '  (' + SE.t('karo') + ' ' + c.x + ', ' + c.y + ')';
       var moved = !self.hover || self.hover.x !== c.x || self.hover.y !== c.y;
       self.hover = c;
       if (self.stroke && moved) {

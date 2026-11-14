@@ -171,7 +171,7 @@ SE.module('audio', function (SE) {
   }
   function decode(src) {
     var c = ac();
-    if (!c) return Promise.reject(new Error('Bu tarayıcıda ses yok'));
+    if (!c) return Promise.reject(new Error(SE.t('Bu tarayıcıda ses yok')));
     var p = buffers.get(src);
     if (p) return p;
     p = new Promise(function (res, rej) {
